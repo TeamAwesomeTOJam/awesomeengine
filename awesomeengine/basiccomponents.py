@@ -14,10 +14,10 @@ class DrawHitBoxComponent(Component):
     def handle_draw(self, entity, camera):
         camera.draw_rect((255, 0, 255, 0), (entity.x, entity.y, entity.width, entity.height))
 
-class DrawImageComponent(Component):
+class DrawScaledImageComponent(Component):
 
     def add(self, entity):
-        verify_attrs(entity, ['x', 'y', 'image'])
+        verify_attrs(entity, ['x', 'y', 'width', 'height', 'image', ('angle', 0)])
 
         entity.register_handler('draw', self.handle_draw)
 
@@ -25,7 +25,7 @@ class DrawImageComponent(Component):
         entity.unregister_handler('draw', self.handle_draw)
 
     def handle_draw(self, entity, camera):
-        camera.draw_image((entity.x, entity.y), engine.get_engine().resource_manager.get('image', entity.image))
+        camera.draw_image((entity.x, entity.y, entity.width, entity.height), engine.get_engine().resource_manager.get('image', entity.image), entity.angle)
 
 class VelocityMoveComponent(Component):
 

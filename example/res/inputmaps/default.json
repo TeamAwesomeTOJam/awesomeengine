@@ -2,8 +2,17 @@
   "KEY KeyCode.escape"  : ["ENGINE", "QUIT"],
   "KEY KeyCode.q" : ["camera", "ccw"],
   "KEY KeyCode.e" : ["camera", "cw"],
+
   "KEY KeyCode.w" : ["camera", "up"],
   "KEY KeyCode.s" : ["camera", "down"],
   "KEY KeyCode.a" : ["camera", "left"],
-  "KEY KeyCode.d" : ["camera", "right"]
+  "KEY KeyCode.d" : ["camera", "right"],
+
+  "KEY KeyCode.pageup" :["smile", "ccw"],
+  "KEY KeyCode.pagedown" :["smile", "cw"],
+
+  "KEY KeyCode.up" : ["smile", "up"],
+  "KEY KeyCode.down" : ["smile", "down"],
+  "KEY KeyCode.left" : ["smile", "left"],
+  "KEY KeyCode.right" : ["smile", "right"]
 }

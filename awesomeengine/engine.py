@@ -84,6 +84,7 @@ class Engine(object):
         # self.renderer.present()
         for c in self.cameras:
             c.render()
+        self.renderer.present()
 
     def quit(self):
         self.running = False
