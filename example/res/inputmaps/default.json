@@ -1,0 +1,9 @@
+{
+  "KEY KeyCode.escape"  : ["ENGINE", "QUIT"],
+  "KEY KeyCode.q" : ["camera", "ccw"],
+  "KEY KeyCode.e" : ["camera", "cw"],
+  "KEY KeyCode.w" : ["camera", "up"],
+  "KEY KeyCode.s" : ["camera", "down"],
+  "KEY KeyCode.a" : ["camera", "left"],
+  "KEY KeyCode.d" : ["camera", "right"]
+}
