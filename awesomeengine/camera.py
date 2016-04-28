@@ -2,6 +2,7 @@ import sdl2hl
 import engine
 import math
 from component import verify_attrs
+import rectangle
 
 
 class Camera(object):
@@ -16,20 +17,21 @@ class Camera(object):
         self.renderer = renderer
         self.pixel_format = sdl2hl.PixelFormat.argb8888
 
+        self.background_colour = (0, 0, 0, 255)
+
     def render(self):
 
         texture = sdl2hl.Texture(self.renderer, self.pixel_format, sdl2hl.TextureAccess.target, self.entity.width, self.entity.height)
 
         self.renderer.render_target = texture
-        self.renderer.draw_color = (0, 0, 0, 255)
+        self.renderer.draw_color = self.background_colour
         self.renderer.clear()
 
         draw_width, draw_height = get_bounding_box(self.entity.width, self.entity.height, self.entity.angle)
         draw_x = self.entity.x - draw_width / 2
         draw_y = self.entity.y - draw_height / 2
 
-        to_draw = engine.get_engine().entity_manager.get_in_area('draw',
-                            (draw_x, draw_y, draw_width, draw_height))
+        to_draw = engine.get_engine().entity_manager.get_in_area('draw', rectangle.from_entity(self.entity))
         for e in to_draw:
             e.handle('draw', self)
 
@@ -52,20 +54,15 @@ class Camera(object):
         return int(cx), int(cy)
 
     def draw_rect(self, c, r):
-        points = [(r[0], r[1]),(r[0]+r[2],r[1]),(r[0]+r[2],r[1] + r[3]),(r[0],r[1]+r[3]), (r[0],r[1])]
+        points = [r.top_left, r.bottom_left, r.bottom_right, r.top_right, r.top_left]
         transformed_points = map(self.world_to_camera, points)
         sdlpoints = map(lambda x : sdl2hl.Point(x[0], x[1]), transformed_points)
         self.renderer.draw_color = c
         self.renderer.draw_lines(*sdlpoints)
 
-    def draw_image(self, p, texture, rotation=0):
-        if len(p) == 2:
-            x , y = self.world_to_camera(p)
-            w, h = texture.width, texture.height
-        elif len(p) == 4:
-            x, y = self.world_to_camera((p[0], p[1]))
-            w, h = p[2], p[3]
-        self.renderer.copy(texture, dest_rect=sdl2hl.Rect(int(x - w/2), int(y - h/2), w, h), rotation=self.entity.angle - rotation)
+    def draw_image(self, r, texture):
+        x,y = self.world_to_camera(r.center)
+        self.renderer.copy(texture, dest_rect=sdl2hl.Rect(int(x - r.w/2), int(y - r.h/2), r.w, r.h), rotation=self.entity.angle - r.a)
 
 
 def get_bounding_box(w, h, a):

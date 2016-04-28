@@ -1,5 +1,6 @@
 from awesomeengine.component import verify_attrs
 from awesomeengine.component import Component
+from awesomeengine import engine
 
 class InputRotateComponent(Component):
 
@@ -15,6 +16,8 @@ class InputRotateComponent(Component):
 
     def handle_update(self, entity, dt):
         entity.angle = (entity.angle + entity.va*dt) % 360
+
+        engine.get_engine().entity_manager.update_position(entity)
 
     def handle_input(self, entity, action, value):
         if action == 'ccw' and value == 1:

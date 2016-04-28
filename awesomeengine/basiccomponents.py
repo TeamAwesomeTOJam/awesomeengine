@@ -1,5 +1,6 @@
 from component import *
 import engine
+import rectangle
 
 class DrawHitBoxComponent(Component):
 
@@ -12,7 +13,8 @@ class DrawHitBoxComponent(Component):
         entity.unregister_handler('draw', self.handle_draw)
 
     def handle_draw(self, entity, camera):
-        camera.draw_rect((255, 0, 255, 0), (entity.x, entity.y, entity.width, entity.height))
+        camera.draw_rect((255, 0, 255, 255), rectangle.from_entity(entity))
+        camera.draw_rect((255, 0, 255, 255), rectangle.from_entity(entity).bounding_rect())
 
 class DrawScaledImageComponent(Component):
 
@@ -25,7 +27,7 @@ class DrawScaledImageComponent(Component):
         entity.unregister_handler('draw', self.handle_draw)
 
     def handle_draw(self, entity, camera):
-        camera.draw_image((entity.x, entity.y, entity.width, entity.height), engine.get_engine().resource_manager.get('image', entity.image), entity.angle)
+        camera.draw_image(rectangle.from_entity(entity), engine.get_engine().resource_manager.get('image', entity.image))
 
 class VelocityMoveComponent(Component):
 
@@ -40,3 +42,4 @@ class VelocityMoveComponent(Component):
     def handle_update(self, entity, dt):
         entity.x += dt * entity.vx
         entity.y += dt * entity.vy
+        engine.get_engine().entity_manager.update_position(entity)

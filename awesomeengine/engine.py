@@ -50,6 +50,7 @@ class Engine(object):
     def create_camera(self, entity, screen_x, screen_y, screen_width, screen_height):
         cam = camera.Camera(entity, screen_x, screen_y, screen_width, screen_height, self.renderer)
         self.cameras.append(cam)
+        return cam
 
     def run(self):
 
@@ -76,6 +77,8 @@ class Engine(object):
         to_update = self.entity_manager.get_by_tag('update')
         for e in to_update:
             e.handle('update', dt)
+
+
 
     def render(self):
         # self.renderer.render_target = None
