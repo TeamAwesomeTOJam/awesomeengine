@@ -22,6 +22,7 @@ class Camera(object):
     def render(self):
 
         texture = sdl2hl.Texture(self.renderer, self.pixel_format, sdl2hl.TextureAccess.target, self.entity.width, self.entity.height)
+        texture.blend_mode = sdl2hl.BlendMode.blend
 
         self.renderer.render_target = texture
         self.renderer.draw_color = self.background_colour
