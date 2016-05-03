@@ -47,8 +47,8 @@ class Engine(object):
             self.window = sdl2hl.Window(title=title, w=size[0], h=size[1], *flags)
         self.renderer = sdl2hl.Renderer(self.window)
 
-    def create_camera(self, entity, screen_x, screen_y, screen_width, screen_height):
-        cam = camera.Camera(entity, screen_x, screen_y, screen_width, screen_height, self.renderer)
+    def create_camera(self, entity, layers=[], hud=[]):
+        cam = camera.Camera(self.renderer, entity, layers, hud)
         self.cameras.append(cam)
         return cam
 
@@ -81,10 +81,6 @@ class Engine(object):
 
 
     def render(self):
-        # self.renderer.render_target = None
-        # self.renderer.draw_color = (0, 0, 0, 255)
-        # self.renderer.clear()
-        # self.renderer.present()
         for c in self.cameras:
             c.render()
         self.renderer.present()

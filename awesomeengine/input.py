@@ -75,7 +75,7 @@ class InputManager:
         return processed_events
     
     def _new_event(self, device_id, control_type, control_id, value):
-        if device_id == None:
+        if device_id is None:
             target_and_action = self._input_map.get('%s %s' % (control_type, control_id))
         else:
             target_and_action = self._input_map.get('%s %s %s' % (device_id, control_type, control_id))

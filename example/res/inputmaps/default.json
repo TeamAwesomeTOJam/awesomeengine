@@ -14,5 +14,13 @@
   "KEY KeyCode.up" : ["smile", "up"],
   "KEY KeyCode.down" : ["smile", "down"],
   "KEY KeyCode.left" : ["smile", "left"],
-  "KEY KeyCode.right" : ["smile", "right"]
+  "KEY KeyCode.right" : ["smile", "right"],
+
+  "KEY KeyCode.u" :["hud_smile", "ccw"],
+  "KEY KeyCode.o" :["hud_smile", "cw"],
+
+  "KEY KeyCode.i" : ["hud_smile", "up"],
+  "KEY KeyCode.k" : ["hud_smile", "down"],
+  "KEY KeyCode.j" : ["hud_smile", "left"],
+  "KEY KeyCode.l" : ["hud_smile", "right"]
 }

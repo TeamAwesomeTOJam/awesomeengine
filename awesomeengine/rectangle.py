@@ -44,6 +44,22 @@ class Rect(object):
     def corners(self):
         return [self.top_left, self.bottom_left, self.bottom_right, self.top_right]
 
+    @property
+    def bottom(self):
+        return self.y - cos(radians(self.a)) * self.h/2 + sin(radians(self.a)) * self.w/2
+
+    @property
+    def top(self):
+        return self.y + cos(radians(self.a)) * self.h/2 + sin(radians(self.a)) * self.w/2
+
+    @property
+    def left(self):
+        return self.x - cos(radians(self.a)) * self.w/2 + sin(radians(self.a)) * self.h/2
+
+    @property
+    def right(self):
+        return self.x + cos(radians(self.a)) * self.w/2 + sin(radians(self.a)) * self.h/2
+
     def bounding_rect(self):
         cosw = self.w * cos(radians(self.a))
         sinw = self.w * sin(radians(self.a))

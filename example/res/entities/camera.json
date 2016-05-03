@@ -5,6 +5,12 @@
   "vy": 0,
   "width": 640,
   "height": 480,
+
+  "screen_x": 0,
+  "screen_y": 0,
+  "screen_width": 640,
+  "screen_height": 480,
+
   "angle": 0,
   "name" : "camera",
   "tags" : ["update", "draw"],
