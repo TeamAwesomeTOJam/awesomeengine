@@ -50,3 +50,21 @@ class InputVelocityComponent(Component):
             entity.vx = 100
         elif (action == 'left' or action == 'right') and value == 0:
             entity.vx = 0
+
+class InputZoomComponent(Component):
+
+    def add(self, entity):
+        verify_attrs(entity, [('width'), 'height'])
+
+        entity.register_handler('input', self.handle_input)
+
+    def remove(self, entity):
+        entity.unregister_handler('input', self.handle_input)
+
+    def handle_input(self, entity, action, value):
+        if action == 'zoom in' and value == 1:
+            entity.width /= 1.5
+            entity.height /= 1.5
+        elif action == 'zoom out' and value == 1:
+            entity.width *= 1.5
+            entity.height *= 1.5

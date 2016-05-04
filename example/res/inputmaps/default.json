@@ -8,6 +8,9 @@
   "KEY KeyCode.a" : ["camera", "left"],
   "KEY KeyCode.d" : ["camera", "right"],
 
+  "KEY KeyCode.z" : ["camera", "zoom in"],
+  "KEY KeyCode.x" : ["camera", "zoom out"],
+
   "KEY KeyCode.pageup" :["smile", "ccw"],
   "KEY KeyCode.pagedown" :["smile", "cw"],
 

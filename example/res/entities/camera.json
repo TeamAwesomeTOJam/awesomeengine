@@ -14,5 +14,5 @@
   "angle": 0,
   "name" : "camera",
   "tags" : ["update", "draw"],
-  "components" : ["InputRotateComponent", "InputVelocityComponent", "VelocityMoveComponent", "DrawHitBoxComponent"]
+  "components" : ["InputZoomComponent", "InputRotateComponent", "InputVelocityComponent", "VelocityMoveComponent", "DrawHitBoxComponent"]
 }

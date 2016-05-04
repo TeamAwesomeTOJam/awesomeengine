@@ -81,7 +81,6 @@ class SpatialMap(object):
             else:
                 return True
         else:
-            # return False
             for r in [a, b]:
                 for i in range(4):
                     p1 = r.corners[i]
