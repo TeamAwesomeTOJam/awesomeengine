@@ -15,36 +15,33 @@ class Camera(object):
         self.renderer = renderer
         self.pixel_format = sdl2hl.PixelFormat.argb8888
 
-        self.transform = self.world_to_camera
+        self.transform_point = self.world_to_camera
         self.transform_angle = self.world_to_camera_angle
+        self.transform_length = self.world_to_camera_length
 
     def render(self):
 
-        texture = sdl2hl.Texture(self.renderer, self.pixel_format, sdl2hl.TextureAccess.target, self.entity.width, self.entity.height)
+        texture = sdl2hl.Texture(self.renderer, self.pixel_format, sdl2hl.TextureAccess.target, self.entity.screen_width, self.entity.screen_height)
 
         self.renderer.render_target = texture
 
-        self.transform = self.world_to_camera
+        self.transform_point = self.world_to_camera
         self.transform_angle = self.world_to_camera_angle
+        self.transform_length = self.world_to_camera_length
 
         for layer in self.layers:
             layer.draw(self)
 
-        zoomed_texture = sdl2hl.Texture(self.renderer, self.pixel_format, sdl2hl.TextureAccess.target, self.entity.screen_width, self.entity.screen_height)
-
-        self.renderer.render_target = zoomed_texture
-
-        self.renderer.copy(texture)
-
-        self.transform = self.hud_to_camera
+        self.transform_point = self.hud_to_camera
         self.transform_angle = self.hud_to_camera_angle
+        self.transform_length = self.hud_to_camera_length
 
         for e in self.hud_entities:
             e.handle('draw', self)
 
         self.renderer.render_target = None
 
-        self.renderer.copy(zoomed_texture,
+        self.renderer.copy(texture,
                            source_rect=None,
                            dest_rect=sdl2hl.Rect(self.entity.screen_x, self.entity.screen_y, self.entity.screen_width, self.entity.screen_height))
 
@@ -57,6 +54,9 @@ class Camera(object):
     def hud_to_camera_angle(self, a):
         return -a
 
+    def hud_to_camera_length(self, l):
+        return l
+
 
     def world_to_camera(self, p):
         tx = p[0] - self.entity.x
@@ -66,23 +66,30 @@ class Camera(object):
         ry = ty * math.cos(math.radians(self.entity.angle)) - tx * math.sin(math.radians(self.entity.angle))
 
         cx = rx + self.entity.width / 2
-        cy = self.entity.height / 2 - ry
+        cy = ry + self.entity.height / 2
 
-        return int(cx), int(cy)
+        sx = float(self.entity.screen_width) / self.entity.width * cx
+        sy = float(self.entity.screen_height) / self.entity.height * cy
+
+        return int(sx), int(self.entity.screen_height - sy)
 
     def world_to_camera_angle(self, a):
         return self.entity.angle - a
 
+    def world_to_camera_length(self, l):
+        return int(float(self.entity.screen_width)/self.entity.width*l)
+
     def draw_rect(self, c, r):
         points = [r.top_left, r.bottom_left, r.bottom_right, r.top_right, r.top_left]
-        transformed_points = map(self.transform, points)
+        transformed_points = map(self.transform_point, points)
         sdlpoints = map(lambda x : sdl2hl.Point(x[0], x[1]), transformed_points)
         self.renderer.draw_color = c
         self.renderer.draw_lines(*sdlpoints)
 
     def draw_image(self, r, texture):
-        x,y = self.transform(r.center)
-        self.renderer.copy(texture, dest_rect=sdl2hl.Rect(int(x - r.w/2), int(y - r.h/2), r.w, r.h), rotation=self.transform_angle(r.a))
+        x,y = self.transform_point(r.center)
+        w,h = self.transform_length(r.w), self.transform_length(r.h)
+        self.renderer.copy(texture, dest_rect=sdl2hl.Rect(int(x - w/2), int(y - h/2), w,h), rotation=self.transform_angle(r.a))
 
     def clear(self, colour):
         self.renderer.draw_color = colour
