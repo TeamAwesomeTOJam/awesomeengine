@@ -68,3 +68,17 @@ class InputZoomComponent(Component):
         elif action == 'zoom out' and value == 1:
             entity.width *= 1.5
             entity.height *= 1.5
+
+class ManagerComponent(Component):
+
+    def add(self, entity):
+        entity.register_handler('input', self.handle_input)
+
+    def remove(self, entity):
+        entity.unregister_handler('input', self.handle_input)
+
+    def handle_input(self, entity, action, value):
+        if action == 'welcome' and value == 1:
+            engine.get_engine().change_mode('welcome')
+        elif action == 'main' and value == 1:
+            engine.get_engine().change_mode('main')

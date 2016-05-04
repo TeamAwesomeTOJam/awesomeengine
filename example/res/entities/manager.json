@@ -1,0 +1,4 @@
+{
+  "name": "manager",
+  "components": ["ManagerComponent"]
+}

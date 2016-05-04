@@ -25,5 +25,8 @@
   "KEY KeyCode.i" : ["hud_smile", "up"],
   "KEY KeyCode.k" : ["hud_smile", "down"],
   "KEY KeyCode.j" : ["hud_smile", "left"],
-  "KEY KeyCode.l" : ["hud_smile", "right"]
+  "KEY KeyCode.l" : ["hud_smile", "right"],
+
+  "KEY KeyCode.n1" : ["manager", "welcome"],
+  "KEY KeyCode.n2" : ["manager", "main"]
 }
