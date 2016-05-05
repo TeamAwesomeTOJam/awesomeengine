@@ -3,6 +3,7 @@ import os
 import engine
 import freezejson
 import sdl2hl
+import sdl2hl.ttf
 
 
 class ResourceManager(object):
@@ -92,4 +93,9 @@ def LoadInputMapping(prefix, key):
         mapping = json.load(in_file)
 
     return mapping
+
+def LoadFont(prefix, key):
+    # print os.path.join(prefix, 'fonts', key[0] + '.ttf')
+    # return sdl2hl.ttf.Font(os.path.join(prefix, 'fonts', key[0] + '.ttf'), key[1])
+    return sdl2hl.ttf.Font.from_path(os.path.join(prefix, 'fonts', key[0] + '.ttf'),key[1])
 

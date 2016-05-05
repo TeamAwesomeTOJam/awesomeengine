@@ -8,6 +8,7 @@ import entity
 import entitymanager
 import input
 import resourcemanager
+import sdl2hl.ttf
 
 _engine = None
 
@@ -18,11 +19,13 @@ class Engine(object):
         _engine = self
 
         sdl2hl.init(*flags)
+        sdl2hl.ttf.init()
 
         self.resource_manager = resourcemanager.ResourceManager(res_prefix)
         self.resource_manager.register_loader('entity', resourcemanager.LoadEntityData)
         self.resource_manager.register_loader('inputmap', resourcemanager.LoadInputMapping)
         self.resource_manager.register_loader('image', resourcemanager.LoadImage)
+        self.resource_manager.register_loader('font', resourcemanager.LoadFont)
 
         self.component_manager = componentmanager.ComponentManager()
         self.component_manager.register_module(basiccomponents)
@@ -86,7 +89,8 @@ class Engine(object):
                 if event.action == 'QUIT' and event.value > 0:
                     self.quit()
             else:
-                self.entity_manager.get_by_name(event.target).handle('input', event.action, event.value)
+                if self.entity_manager.has_by_name(event.target):
+                    self.entity_manager.get_by_name(event.target).handle('input', event.action, event.value)
 
     def update(self, dt):
         to_update = self.entity_manager.get_by_tag('update')

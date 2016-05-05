@@ -30,20 +30,19 @@ class WelcomeMode(awesomeengine.mode.Mode):
 
     def enter(self):
         e = awesomeengine.get_engine()
-        box = e.add_entity('smile')
-        h_smile = e.add_entity('hud_smile')
-        c = e.add_entity('camera')
-        c2 = e.add_entity('camera2')
+        h = e.add_entity('hello')
 
-        l = awesomeengine.layer.SimpleCroppedLayer('draw')
+        c = e.add_entity('welcome_camera')
+
+        # l = awesomeengine.layer.SimpleCroppedLayer('draw')
         l2 = awesomeengine.layer.SolidBackgroundLayer((0, 0, 0, 255))
-        l3 = awesomeengine.layer.SolidBackgroundLayer((100, 100, 100, 255))
 
-        cam1 = e.create_camera(c, layers=[l2, l], hud=[h_smile])
-        cam2 = e.create_camera(c2, layers=[l3, l])
+        cam = e.create_camera(c, layers=[l2], hud=[h])
 
-        self.cams = [cam1, cam2]
-        self.entities = [box, h_smile, c, c2]
+        self.entities = [h, c]
+        self.cams = [cam]
+
+
 
     def leave(self):
         e = awesomeengine.get_engine()

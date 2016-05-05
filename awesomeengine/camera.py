@@ -103,3 +103,9 @@ class Camera(object):
     def clear(self, colour):
         self.renderer.draw_color = colour
         self.renderer.clear()
+
+    def draw_text(self, colour, font, top_left, text):
+        surface = self.font.render_solid(text, colour)
+        texture = sdl2hl.Texture.from_surface(self.renderer, surface)
+        x , y = self.transfrom((top_left))
+        self.renderer.copy(texture, dest_rect=sdl2hl.Rect(x,y,texture.w, texture.h))

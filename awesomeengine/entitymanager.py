@@ -62,6 +62,9 @@ class EntityManager(object):
         
     def get_by_name(self, name):
         return self._entities_by_name[name]
+
+    def has_by_name(self, name):
+        return name in self._entities_by_name
         
     def get_by_tag(self, tag):
         try:
