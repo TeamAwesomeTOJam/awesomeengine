@@ -104,8 +104,9 @@ class Camera(object):
         self.renderer.draw_color = colour
         self.renderer.clear()
 
-    def draw_text(self, colour, font, top_left, text):
-        surface = self.font.render_solid(text, colour)
-        texture = sdl2hl.Texture.from_surface(self.renderer, surface)
-        x , y = self.transfrom((top_left))
-        self.renderer.copy(texture, dest_rect=sdl2hl.Rect(x,y,texture.w, texture.h))
+    def draw_line(self, c, p1, p2):
+        points = [self.transform_point(p1), self.transform_point(p2)]
+        sdlpoints = map(lambda x: sdl2hl.Point(x[0], x[1]), points)
+        self.renderer.draw_color = c
+        self.renderer.draw_lines(*sdlpoints)
+

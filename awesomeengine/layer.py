@@ -40,3 +40,23 @@ class SolidBackgroundLayer(object):
 
     def draw(self, camera):
         camera.clear(self.color)
+
+class GridLayer(object):
+
+    def draw(self, camera):
+        r = rectangle.from_entity(camera.entity).bounding_rect()
+
+        grid_size = 32
+        c = (255,0,0,255)
+
+
+        min_grid_x = int(r.left / grid_size)
+        max_grid_x = int(r.right / grid_size + 1)
+        min_grid_y = int(r.bottom / grid_size)
+        max_grid_y = int(r.top / grid_size + 1)
+
+        for x in range(min_grid_x, max_grid_x):
+            camera.draw_line(c,(x*grid_size, r.top), (x*grid_size, r.bottom))
+
+        for y in range(min_grid_y, max_grid_y):
+            camera.draw_line(c, (r.left, y*grid_size), (r.right, y*grid_size))
