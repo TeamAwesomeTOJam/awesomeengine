@@ -33,7 +33,7 @@ class DrawScaledImageComponent(Component):
 class VelocityMoveComponent(Component):
 
     def add(self, entity):
-        verify_attrs(entity, ['x', 'y', 'vx', 'vy'])
+        verify_attrs(entity, ['x', 'y', ('vx', 0), ('vy', 0)])
 
         entity.register_handler('update', self.handle_update)
 
@@ -44,6 +44,20 @@ class VelocityMoveComponent(Component):
         entity.x += dt * entity.vx
         entity.y += dt * entity.vy
         engine.get_engine().entity_manager.update_position(entity)
+
+class ForceVelocityComponent(Component):
+
+    def add(self, entity):
+        verify_attrs(entity, ['mass', ('fx', 0), ('fy', 0), ('vx', 0), ('vy', 0)])
+
+        entity.register_handler('update', self.handle_update)
+
+    def remove(self, entity):
+        entity.unregister_handler('update', self.handle_update)
+
+    def handle_update(self, entity, dt):
+        entity.vx += dt * entity.fx / entity.mass
+        entity.vy += dt * entity.fy / entity.mass
 
 class StaticTextComponent(Component):
 
