@@ -1,5 +1,6 @@
 {
-  "top_left": [0,480],
+  "x": 640,
+  "y": 240,
   "font": "LiberationSans-Regular",
   "text": "Hello World!",
   "size": 50,

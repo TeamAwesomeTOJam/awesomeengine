@@ -48,7 +48,7 @@ class VelocityMoveComponent(Component):
 class StaticTextComponent(Component):
 
     def add(self, entity):
-        verify_attrs(entity, ['colour', 'size', 'text', 'top_left', 'font'])
+        verify_attrs(entity, ['colour', 'size', 'text', 'x', 'y', 'font'])
 
         font = engine.get_engine().resource_manager.get('font', (entity.font, entity.size))
         surface = font.render_solid(entity.text, entity.colour)
@@ -56,8 +56,6 @@ class StaticTextComponent(Component):
 
         entity.width = entity.texture.w
         entity.height = entity.texture.h
-        entity.x = entity.top_left[0] + entity.width/2
-        entity.y = entity.top_left[1] - entity.height/2
 
         entity.register_handler('draw', self.handle_draw)
 
