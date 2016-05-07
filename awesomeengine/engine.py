@@ -14,11 +14,11 @@ _engine = None
 
 class Engine(object):
 
-    def __init__(self, res_prefix, *flags):
+    def __init__(self, res_prefix):
         global _engine
         _engine = self
 
-        sdl2hl.init(*flags)
+        sdl2hl.init(sdl2hl.InitFlag.everything)
         sdl2hl.ttf.init()
 
         self.resource_manager = resourcemanager.ResourceManager(res_prefix)
