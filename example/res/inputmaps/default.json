@@ -1,32 +1,32 @@
 {
-  "KEY KeyCode.escape"  : ["ENGINE", "QUIT"],
-  "KEY KeyCode.q" : ["camera", "ccw"],
-  "KEY KeyCode.e" : ["camera", "cw"],
+  "KeyCode.escape"  : ["ENGINE", "QUIT"],
+  "KeyCode.q" : ["camera", "ccw"],
+  "KeyCode.e" : ["camera", "cw"],
 
-  "KEY KeyCode.w" : ["camera", "up"],
-  "KEY KeyCode.s" : ["camera", "down"],
-  "KEY KeyCode.a" : ["camera", "left"],
-  "KEY KeyCode.d" : ["camera", "right"],
+  "KeyCode.w" : ["camera", "up"],
+  "KeyCode.s" : ["camera", "down"],
+  "KeyCode.a" : ["camera", "left"],
+  "KeyCode.d" : ["camera", "right"],
 
-  "KEY KeyCode.z" : ["camera", "zoom in"],
-  "KEY KeyCode.x" : ["camera", "zoom out"],
+  "KeyCode.z" : ["camera", "zoom in"],
+  "KeyCode.x" : ["camera", "zoom out"],
 
-  "KEY KeyCode.pageup" :["smile", "ccw"],
-  "KEY KeyCode.pagedown" :["smile", "cw"],
+  "KeyCode.pageup" :["smile", "ccw"],
+  "KeyCode.pagedown" :["smile", "cw"],
 
-  "KEY KeyCode.up" : ["smile", "up"],
-  "KEY KeyCode.down" : ["smile", "down"],
-  "KEY KeyCode.left" : ["smile", "left"],
-  "KEY KeyCode.right" : ["smile", "right"],
+  "KeyCode.up" : ["smile", "up"],
+  "KeyCode.down" : ["smile", "down"],
+  "KeyCode.left" : ["smile", "left"],
+  "KeyCode.right" : ["smile", "right"],
 
-  "KEY KeyCode.u" :["hud_smile", "ccw"],
-  "KEY KeyCode.o" :["hud_smile", "cw"],
+  "KeyCode.u" :["hud_smile", "ccw"],
+  "KeyCode.o" :["hud_smile", "cw"],
 
-  "KEY KeyCode.i" : ["hud_smile", "up"],
-  "KEY KeyCode.k" : ["hud_smile", "down"],
-  "KEY KeyCode.j" : ["hud_smile", "left"],
-  "KEY KeyCode.l" : ["hud_smile", "right"],
+  "KeyCode.i" : ["hud_smile", "up"],
+  "KeyCode.k" : ["hud_smile", "down"],
+  "KeyCode.j" : ["hud_smile", "left"],
+  "KeyCode.l" : ["hud_smile", "right"],
 
-  "KEY KeyCode.n1" : ["manager", "welcome"],
-  "KEY KeyCode.n2" : ["manager", "main"]
+  "KeyCode.n1" : ["manager", "welcome"],
+  "KeyCode.n2" : ["manager", "main"]
 }
