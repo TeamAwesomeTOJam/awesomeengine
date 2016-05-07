@@ -10,6 +10,8 @@ import input
 import resourcemanager
 import sdl2hl.ttf
 
+import Box2D
+
 _engine = None
 
 class Engine(object):
@@ -41,6 +43,11 @@ class Engine(object):
         self.running = True
         self.current_mode = None
         self.modes = {}
+        self.box2d_world = None
+
+    def create_box2d_world(self, gravity):
+        if self.box2d_world is None:
+            self.box2d_world = Box2D.b2World(gravity=gravity)
 
     def add_entity(self, static_data_name, **kwargs):
         ent = entity.Entity(static_data_name, **kwargs)
@@ -77,10 +84,19 @@ class Engine(object):
             dt = timer.tick(60)
             self.handle_events()
             self.update(dt)
+            self.handle_physics(dt)
             self.entity_manager.commit_changes()
             self.render()
 
         sdl2hl.quit()
+
+    def handle_physics(self, dt):
+        if self.box2d_world is not None:
+            velocity_iters = 6
+            position_iters = 2
+            self.box2d_world.Step(dt, velocity_iters, position_iters)
+            self.box2d_world.ClearForces()
+
 
     def handle_events(self):
         events = self.input_manager.process_events()
