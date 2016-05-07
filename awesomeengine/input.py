@@ -26,7 +26,7 @@ class InputManager:
                 processed_events.append(InputEvent('ENGINE', 'QUIT', 1))
 
             elif e.type == sdl2hl.EventType.controlleraxismotion:
-                event = self._new_event(e.which, e.axis, e.value)
+                event = self._new_event(e.which, e.axis, e.value / 32767.0)
                 if event != None:
                     processed_events.append(event)
             elif e.type == sdl2hl.EventType.controllerbuttondown:
@@ -70,5 +70,8 @@ class InputManager:
             return None
         else:
             target, action = target_and_action
+            if action.startswith('-'):
+                value = -value
+                action = action[1:]
             return InputEvent(target, action, value)
 
