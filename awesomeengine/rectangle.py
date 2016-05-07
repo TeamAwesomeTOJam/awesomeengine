@@ -16,6 +16,9 @@ class Rect(object):
         self.h = height
         self.a = angle
 
+    def __str__(self):
+        return 'Rect({},{},{},{},{})'.format(self.x, self.y, self.w, self.h, self.a)
+
     @property
     def top_left(self):
         return (self.x - cos(radians(self.a)) * self.w/2 - sin(radians(self.a)) * self.h/2,

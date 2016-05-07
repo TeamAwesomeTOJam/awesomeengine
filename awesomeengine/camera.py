@@ -110,3 +110,9 @@ class Camera(object):
         self.renderer.draw_color = c
         self.renderer.draw_lines(*sdlpoints)
 
+    def draw_lines(self, c, points):
+        transformed_points = map(self.transform_point, points)
+        sdlpoints = map(lambda x: sdl2hl.Point(x[0], x[1]), transformed_points)
+        self.renderer.draw_color = c
+        self.renderer.draw_lines(*sdlpoints)
+
