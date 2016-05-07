@@ -112,8 +112,9 @@ class SpatialMap(object):
         
     def _get_grid_squares(self, rect):
         r = rect.bounding_rect()
-        min_grid_x = int(r.bottom_left[0] / self.grid_size)
-        max_grid_x = int((r.bottom_left[0] + r.w) / self.grid_size + 1)
-        min_grid_y = int(r.bottom_left[1] / self.grid_size)
-        max_grid_y = int((r.bottom_left[1] + r.h) / self.grid_size + 1)
+        x,y = r.bottom_left
+        min_grid_x = int(x / self.grid_size)
+        max_grid_x = int((x + r.w) / self.grid_size + 1)
+        min_grid_y = int(y / self.grid_size)
+        max_grid_y = int((y + r.h) / self.grid_size + 1)
         return set((x, y) for x in range(min_grid_x, max_grid_x + 1) for y in range(min_grid_y, max_grid_y + 1))

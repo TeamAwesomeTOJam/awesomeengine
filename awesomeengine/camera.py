@@ -68,8 +68,12 @@ class Camera(object):
         tx = p[0] - self.entity.x
         ty = p[1] - self.entity.y
 
-        rx = tx * math.cos(math.radians(self.entity.angle)) + ty * math.sin(math.radians(self.entity.angle))
-        ry = ty * math.cos(math.radians(self.entity.angle)) - tx * math.sin(math.radians(self.entity.angle))
+        if self.entity.angle == 0:
+            rx = tx
+            ry = ty
+        else:
+            rx = tx * math.cos(math.radians(self.entity.angle)) + ty * math.sin(math.radians(self.entity.angle))
+            ry = ty * math.cos(math.radians(self.entity.angle)) - tx * math.sin(math.radians(self.entity.angle))
 
         cx = rx + self.entity.width / 2
         cy = ry + self.entity.height / 2

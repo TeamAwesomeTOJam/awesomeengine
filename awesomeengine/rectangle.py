@@ -21,23 +21,35 @@ class Rect(object):
 
     @property
     def top_left(self):
-        return (self.x - cos(radians(self.a)) * self.w/2 - sin(radians(self.a)) * self.h/2,
-                self.y + cos(radians(self.a)) * self.h/2 - sin(radians(self.a)) * self.w/2)
+        if self.a == 0:
+            return self.x - self.w/2, self.y + self.h/2
+        else:
+            return (self.x - cos(radians(self.a)) * self.w/2 - sin(radians(self.a)) * self.h/2,
+                    self.y + cos(radians(self.a)) * self.h/2 - sin(radians(self.a)) * self.w/2)
 
     @property
     def top_right(self):
-        return (self.x + cos(radians(self.a)) * self.w/2 - sin(radians(self.a)) * self.h/2,
-                self.y + cos(radians(self.a)) * self.h/2 + sin(radians(self.a)) * self.w/2)
+        if self.a == 0:
+            return self.x + self.w / 2, self.y + self.h / 2
+        else:
+            return (self.x + cos(radians(self.a)) * self.w/2 - sin(radians(self.a)) * self.h/2,
+                    self.y + cos(radians(self.a)) * self.h/2 + sin(radians(self.a)) * self.w/2)
 
     @property
     def bottom_left(self):
-        return (self.x - cos(radians(self.a)) * self.w/2 + sin(radians(self.a)) * self.h/2,
-                self.y - cos(radians(self.a)) * self.h/2 - sin(radians(self.a)) * self.w/2)
+        if self.a == 0:
+            return self.x - self.w/2 , self.y - self.h/2
+        else:
+            return (self.x - cos(radians(self.a)) * self.w/2 + sin(radians(self.a)) * self.h/2,
+                    self.y - cos(radians(self.a)) * self.h/2 - sin(radians(self.a)) * self.w/2)
 
     @property
     def bottom_right(self):
-        return (self.x + cos(radians(self.a)) * self.w/2 + sin(radians(self.a)) * self.h/2,
-                self.y - cos(radians(self.a)) * self.h/2 + sin(radians(self.a)) * self.w/2)
+        if self.a == 0:
+            return self.x + self.w/2, self.y - self.h/2
+        else:
+            return (self.x + cos(radians(self.a)) * self.w/2 + sin(radians(self.a)) * self.h/2,
+                    self.y - cos(radians(self.a)) * self.h/2 + sin(radians(self.a)) * self.w/2)
 
     @property
     def center(self):

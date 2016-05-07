@@ -9,6 +9,7 @@ import entitymanager
 import input
 import resourcemanager
 import sdl2hl.ttf
+import collections
 
 import Box2D
 
@@ -45,6 +46,8 @@ class Engine(object):
         self.modes = {}
         self.box2d_world = None
 
+        self.fps_queue = collections.deque(maxlen=30)
+
     def create_box2d_world(self, gravity):
         if self.box2d_world is None:
             self.box2d_world = Box2D.b2World(gravity=gravity)
@@ -79,14 +82,22 @@ class Engine(object):
 
     def run(self):
 
+        framecount = 0
         timer = clock.Clock()
         while self.running:
+            framecount = (framecount + 1) % 200
             dt = timer.tick(60)
             self.handle_events()
             self.update(dt)
             self.handle_physics(dt)
             self.entity_manager.commit_changes()
             self.render()
+            self.fps_queue.append(1.0/dt)
+            if framecount == 0:
+                print sum(self.fps_queue)/len(self.fps_queue)
+
+            # self.average_fps = (self.average_fps + 1.0/dt)/2
+            # self.window.title = '{:f}'.format(1.0/dt)
 
         sdl2hl.quit()
 
@@ -119,6 +130,7 @@ class Engine(object):
         self.renderer.present()
 
     def quit(self):
+        print self.average_fps
         self.running = False
 
     def change_mode(self, new_mode):
