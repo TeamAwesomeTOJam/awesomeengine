@@ -130,7 +130,6 @@ class Engine(object):
         self.renderer.present()
 
     def quit(self):
-        print self.average_fps
         self.running = False
 
     def change_mode(self, new_mode):
