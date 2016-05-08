@@ -57,8 +57,23 @@ class Engine(object):
         self.update_layers = []
 
     def create_box2d_world(self, gravity):
+        class ContactListener(Box2D.b2ContactListener):
+            def __init__(self):
+                Box2D.b2ContactListener.__init__(self)
+            def BeginContact(self, contact):
+                if 'entity' in contact.fixtureA.body.userData:
+                    contact.fixtureA.body.userData['entity'].handle('contact', contact.fixtureB.body.userData.get('entity', None), True)
+                if 'entity' in contact.fixtureB.body.userData:
+                    contact.fixtureB.body.userData['entity'].handle('contact', contact.fixtureA.body.userData.get('entity', None), False)                
+            def EndContact(self, contact):
+                pass
+            def PreSolve(self, contact, oldManifold):
+                pass
+            def PostSolve(self, contact, impulse):
+                pass
+    
         if self.box2d_world is None:
-            self.box2d_world = Box2D.b2World(gravity=gravity, doSleep=True)
+            self.box2d_world = Box2D.b2World(gravity=gravity, doSleep=True, contactListener=ContactListener())
 
     def add_entity(self, static_data_name, **kwargs):
         ent = entity.Entity(static_data_name, **kwargs)
