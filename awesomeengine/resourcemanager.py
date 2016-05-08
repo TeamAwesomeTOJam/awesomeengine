@@ -3,6 +3,7 @@ import os
 import engine
 import freezejson
 import sdl2hl
+import sdl2hl.mixer
 import sdl2hl.ttf
 
 
@@ -82,7 +83,7 @@ def LoadAnimation(prefix, key):
     return freezejson.freeze_value(animation)
                     
 def LoadSound(prefix, key):
-    pass
+    return sdl2hl.mixer.Chunk.from_path(os.path.join(prefix, 'sounds', key + '.ogg'))
 
 def LoadText(prefix, key):
     f = open(os.path.join(prefix, 'text', key),'r')

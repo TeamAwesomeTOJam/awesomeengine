@@ -1,4 +1,6 @@
 import sdl2hl
+import sdl2hl.mixer
+import sdl2hl.ttf
 
 import basiccomponents
 import camera
@@ -8,7 +10,6 @@ import entity
 import entitymanager
 import input
 import resourcemanager
-import sdl2hl.ttf
 import collections
 import rectangle
 
@@ -23,12 +24,15 @@ class Engine(object):
         _engine = self
 
         sdl2hl.init(sdl2hl.InitFlag.everything)
+        sdl2hl.mixer.init(sdl2hl.mixer.AudioInitFlag.ogg)
+        sdl2hl.mixer.open_audio()
         sdl2hl.ttf.init()
 
         self.resource_manager = resourcemanager.ResourceManager(res_prefix)
         self.resource_manager.register_loader('entity', resourcemanager.LoadEntityData)
         self.resource_manager.register_loader('inputmap', resourcemanager.LoadInputMapping)
         self.resource_manager.register_loader('image', resourcemanager.LoadImage)
+        self.resource_manager.register_loader('sound', resourcemanager.LoadSound)
         self.resource_manager.register_loader('font', resourcemanager.LoadFont)
         self.resource_manager.register_loader('map', resourcemanager.LoadMap)
 
