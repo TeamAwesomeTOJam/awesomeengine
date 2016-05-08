@@ -50,7 +50,7 @@ class Engine(object):
 
     def create_box2d_world(self, gravity):
         if self.box2d_world is None:
-            self.box2d_world = Box2D.b2World(gravity=gravity)
+            self.box2d_world = Box2D.b2World(gravity=gravity, doSleep=True)
 
     def add_entity(self, static_data_name, **kwargs):
         ent = entity.Entity(static_data_name, **kwargs)
@@ -115,6 +115,8 @@ class Engine(object):
             if event.target == 'ENGINE':
                 if event.action == 'QUIT' and event.value > 0:
                     self.quit()
+                elif event.action == 'CLEAR' and event.value > 0:
+                    self.resource_manager.clear()
             else:
                 if self.entity_manager.has_by_name(event.target):
                     self.entity_manager.get_by_name(event.target).handle('input', event.action, event.value)
