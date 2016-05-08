@@ -78,3 +78,21 @@ class StaticTextComponent(Component):
 
     def handle_draw(self, entity, camera):
         camera.draw_image(rectangle.from_entity(entity), entity.texture)
+
+class DynamicTextComponent(Component):
+
+    def add(self, entity):
+        verify_attrs(entity, ['colour', 'size', 'text', 'topleft', 'font'])
+
+        entity.register_handler('draw', self.handle_draw)
+
+    def remove(self, entity):
+        entity.unregister_handler('draw', self.handle_draw)
+
+    def handle_draw(self, entity, camera):
+        if entity.text:
+            font = engine.get_engine().resource_manager.get('font', (entity.font, entity.size))
+            surface = font.render_solid(entity.text, entity.colour)
+            texture = sdl2hl.Texture.from_surface(engine.get_engine().renderer, surface)
+            r = rectangle.Rect(entity.topleft[0] + texture.w/2, entity.topleft[1] - texture.h/2, texture.w, texture.h)
+            camera.draw_image(r, texture)
