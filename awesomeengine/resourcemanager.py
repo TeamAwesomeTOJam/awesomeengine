@@ -95,7 +95,34 @@ def LoadInputMapping(prefix, key):
     return mapping
 
 def LoadFont(prefix, key):
-    # print os.path.join(prefix, 'fonts', key[0] + '.ttf')
-    # return sdl2hl.ttf.Font(os.path.join(prefix, 'fonts', key[0] + '.ttf'), key[1])
     return sdl2hl.ttf.Font.from_path(os.path.join(prefix, 'fonts', key[0] + '.ttf'),key[1])
+    
+def LoadMap(prefix, key):
+    with open(os.path.join(prefix, 'maps', key + '.csv')) as in_file:
+        section = 0
+        y = 0
+        legend = {}
+        entities = []
+        
+        for line in in_file:
+            if section == 0:
+                if line.split(',')[0] == '':
+                    section = 1
+                else:
+                    tile_size = line.split(',')
+                    tile_width = int(tile_size[0])
+                    tile_height = int(tile_size[1])
+            elif section == 1:
+                if line.split(',')[0] == '':
+                    section = 2
+                else:
+                    split_line = line.split(',')
+                    legend[split_line[0].strip()] = (split_line[1].strip(),)
+                    print legend
+            elif section == 2:
+                for x, cell in enumerate(line.split(',')):
+                    for entity in legend[cell.strip()]:
+                        entities.append((entity, {'x': x*tile_width, 'y': y*tile_height}))
+                y += 1
+        return entities
 

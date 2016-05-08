@@ -29,6 +29,7 @@ class Engine(object):
         self.resource_manager.register_loader('inputmap', resourcemanager.LoadInputMapping)
         self.resource_manager.register_loader('image', resourcemanager.LoadImage)
         self.resource_manager.register_loader('font', resourcemanager.LoadFont)
+        self.resource_manager.register_loader('map', resourcemanager.LoadMap)
 
         self.component_manager = componentmanager.ComponentManager()
         self.component_manager.register_module(basiccomponents)
@@ -56,6 +57,13 @@ class Engine(object):
         ent = entity.Entity(static_data_name, **kwargs)
         self.entity_manager.add_entity(ent)
         return ent
+
+    def add_entities_from_map(self, map_name):
+        entity_info = self.resource_manager.get('map', map_name)
+        for entity_name, overrides in entity_info:
+            e = entity.Entity(entity_name, **overrides)
+            self.entity_manager.add_entity(e)
+        self.entity_manager.commit_changes()
 
     def remove_entity(self, entity):
         self.entity_manager.remove_entity(entity)
