@@ -117,12 +117,13 @@ def LoadMap(prefix, key):
                     section = 2
                 else:
                     split_line = line.split(',')
-                    legend[split_line[0].strip()] = (split_line[1].strip(),)
-                    print legend
+                    legend[split_line[0].strip()] = [e.strip() for e in split_line[1:] if e.strip() != '']
             elif section == 2:
                 for x, cell in enumerate(line.split(',')):
-                    for entity in legend[cell.strip()]:
-                        entities.append((entity, {'x': x*tile_width, 'y': y*tile_height}))
-                y += 1
+                    if cell.strip() != '':
+                        for entity in legend[cell.strip()]:
+                            entity_data = engine.get_engine().resource_manager.get('entity', entity)
+                            entities.append((entity, {'x': x*tile_width + entity_data.width/2.0, 'y': y*tile_height + entity_data.height/2.0}))
+                y -= 1
         return entities
 
