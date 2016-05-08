@@ -10,6 +10,7 @@ import input
 import resourcemanager
 import sdl2hl.ttf
 import collections
+import rectangle
 
 import Box2D
 
@@ -49,6 +50,8 @@ class Engine(object):
 
         self.fps_queue = collections.deque(maxlen=30)
 
+        self.update_layers = []
+
     def create_box2d_world(self, gravity):
         if self.box2d_world is None:
             self.box2d_world = Box2D.b2World(gravity=gravity, doSleep=True)
@@ -87,6 +90,9 @@ class Engine(object):
 
     def add_mode(self, name, mode):
         self.modes[name] = mode
+
+    def add_update_layer(self, tag, entity=None):
+        self.update_layers.append((entity,tag))
 
     def run(self):
 
@@ -130,9 +136,17 @@ class Engine(object):
                     self.entity_manager.get_by_name(event.target).handle('input', event.action, event.value)
 
     def update(self, dt):
-        to_update = self.entity_manager.get_by_tag('update')
-        for e in to_update:
-            e.handle('update', dt)
+
+        for entity, tag in self.update_layers:
+            if entity is None:
+                to_update = self.entity_manager.get_by_tag(tag)
+                for e in to_update:
+                    e.handle('update', dt)
+            else:
+                r = rectangle.from_entity(entity)
+                to_update = self.entity_manager.get_in_area(tag, r)
+                for e in to_update:
+                    e.handle('update', dt)
 
     def render(self):
         for c in self.cameras:
