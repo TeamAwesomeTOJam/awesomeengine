@@ -1,4 +1,5 @@
 import sdl2hl
+import sdl2hl.mixer
 import sdl2hl.ttf
 
 import basiccomponents
