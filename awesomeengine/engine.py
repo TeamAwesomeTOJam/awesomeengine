@@ -150,6 +150,11 @@ class Engine(object):
                     self.quit()
                 elif event.action == 'CLEAR' and event.value > 0:
                     self.resource_manager.clear()
+                elif event.action == 'FULLSCREEN' and event.value > 0:
+                    if sdl2hl.WindowFlags.fullscreen in self.window.flags:
+                        self.window.set_fullscreen(0)
+                    else:
+                        self.window.set_fullscreen(sdl2hl.WindowFlags.fullscreen)
             else:
                 if self.entity_manager.has_by_name(event.target):
                     self.entity_manager.get_by_name(event.target).handle('input', event.action, event.value)
