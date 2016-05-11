@@ -14,8 +14,13 @@ class DrawHitBoxComponent(Component):
         entity.unregister_handler('draw', self.handle_draw)
 
     def handle_draw(self, entity, camera):
-        camera.draw_rect((255, 0, 255, 255), rectangle.from_entity(entity))
-        camera.draw_rect((255, 0, 255, 255), rectangle.from_entity(entity).bounding_rect())
+        try:
+            c = entity.colour
+        except AttributeError:
+            c = (255,0,255,255)
+
+        camera.draw_rect(c, rectangle.from_entity(entity))
+        camera.draw_rect(c, rectangle.from_entity(entity).bounding_rect())
 
 class DrawScaledImageComponent(Component):
 
