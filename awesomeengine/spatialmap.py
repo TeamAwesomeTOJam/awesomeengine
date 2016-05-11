@@ -12,7 +12,6 @@ class SpatialMap(object):
     def add(self, entity):
         try:
             r = rectangle.from_entity(entity)
-            print r
             if r is None:
                 return
             grid_squares = self._get_grid_squares(r)
