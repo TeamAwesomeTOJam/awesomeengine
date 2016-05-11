@@ -11,7 +11,11 @@ class SpatialMap(object):
     
     def add(self, entity):
         try:
-            grid_squares = self._get_grid_squares(rectangle.from_entity(entity))
+            r = rectangle.from_entity(entity)
+            print r
+            if r is None:
+                return
+            grid_squares = self._get_grid_squares(r)
             for square in grid_squares:
                 if not square in self.map:
                     self.map[square] = weakref.WeakSet()

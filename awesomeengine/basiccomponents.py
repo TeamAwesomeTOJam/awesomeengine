@@ -62,7 +62,7 @@ class ForceVelocityComponent(Component):
 class StaticTextComponent(Component):
 
     def add(self, entity):
-        verify_attrs(entity, ['colour', 'size', 'text', 'x', 'y', 'font'])
+        verify_attrs(entity, ['colour', 'size', 'text', 'font'])
 
         font = engine.get_engine().resource_manager.get('font', (entity.font, entity.size))
         surface = font.render_solid(entity.text, entity.colour)
@@ -77,7 +77,22 @@ class StaticTextComponent(Component):
         entity.unregister_handler('draw', self.handle_draw)
 
     def handle_draw(self, entity, camera):
-        camera.draw_image(rectangle.from_entity(entity), entity.texture)
+
+        try:
+            x_percent = entity.x_percent
+            y_percent = entity.y_percent
+
+            x, y = camera.screen_percent_point((x_percent,y_percent))
+
+        except AttributeError:
+            x, y = entity.x , entity.y
+
+        try:
+            a = entity.angle
+        except AttributeError:
+            a = 0
+
+        camera.draw_image(rectangle.Rect(x, y, entity.width, entity.height, a), entity.texture)
 
 class DynamicTextComponent(Component):
 
@@ -94,5 +109,6 @@ class DynamicTextComponent(Component):
             font = engine.get_engine().resource_manager.get('font', (entity.font, entity.size))
             surface = font.render_solid(entity.text, entity.colour)
             texture = sdl2hl.Texture.from_surface(engine.get_engine().renderer, surface)
-            r = rectangle.Rect(entity.topleft[0] + texture.w/2, entity.topleft[1] - texture.h/2, texture.w, texture.h)
+            x,y = camera.screen_percent_point(entity.topleft)
+            r = rectangle.Rect(x + texture.w/2, y - texture.h/2, texture.w, texture.h)
             camera.draw_image(r, texture)

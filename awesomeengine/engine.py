@@ -90,7 +90,10 @@ class Engine(object):
     def remove_entity(self, entity):
         self.entity_manager.remove_entity(entity)
 
-    def create_window(self, size=(640,480), pos=None, title='awesome', *flags):
+    def create_window(self, size=None, pos=None, title='awesome', *flags):
+        if size is None:
+            display = sdl2hl.video.Display(0)
+            size = display.get_desktop_size()
         if self.window is None:
             if pos:
                 self.window = sdl2hl.Window(title=title, w=size[0], h=size[1], x=pos[0], y=pos[1], *flags)
