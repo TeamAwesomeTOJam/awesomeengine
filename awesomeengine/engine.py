@@ -100,7 +100,7 @@ class Engine(object):
                 self.window = sdl2hl.Window(title=title, w=size[0], h=size[1], x=pos[0], y=pos[1], *flags)
             else:
                 self.window = sdl2hl.Window(title=title, w=size[0], h=size[1], *flags)
-            self.renderer = sdl2hl.Renderer(self.window)
+            self.renderer = sdl2hl.Renderer(self.window, flags={sdl2hl.RendererFlags.presentvsync})
 
     def create_camera(self, entity, layers=[], hud=[]):
         cam = camera.Camera(self.renderer, entity, layers, hud)
