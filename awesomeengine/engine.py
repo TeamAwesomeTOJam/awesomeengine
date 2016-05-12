@@ -26,6 +26,7 @@ class Engine(object):
         sdl2hl.init(sdl2hl.InitFlag.everything)
         sdl2hl.mixer.init(sdl2hl.mixer.AudioInitFlag.ogg)
         sdl2hl.mixer.open_audio()
+        sdl2hl.mixer.allocate_channels(64)
         sdl2hl.ttf.init()
 
         self.resource_manager = resourcemanager.ResourceManager(res_prefix)

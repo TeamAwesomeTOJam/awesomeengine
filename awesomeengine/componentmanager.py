@@ -7,13 +7,12 @@ class ComponentManager(object):
         self.components = {}
         
     def register_component(self, component):
-        print component.__class__.__name__
         self.components[component.__class__.__name__] = component
         
     def register_module(self, module):
         for name, value in module.__dict__.iteritems():
             try:
-                if issubclass(value, Component):
+                if not name.startswith('_') and not isinstance(value, Component) and issubclass(value, Component):
                     self.components[name] = value()
             except Exception , e:
                 print e
