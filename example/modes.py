@@ -19,12 +19,16 @@ class MainMode(awesomeengine.mode.Mode):
         self.cams = [cam1, cam2]
         self.entities = [box, h_smile, c, c2]
 
+        e.add_update_layer('update')
+
     def leave(self):
         e = awesomeengine.get_engine()
         for cam in self.cams:
             e.remove_camera(cam)
         for ent in self.entities:
             e.remove_entity(ent)
+
+        e.remove_update_layer('update')
 
 class WelcomeMode(awesomeengine.mode.Mode):
 

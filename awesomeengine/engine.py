@@ -117,6 +117,10 @@ class Engine(object):
     def add_update_layer(self, tag, entity=None):
         self.update_layers.append((entity,tag))
 
+    def remove_update_layer(self, tag, entity=None):
+        if (entity, tag) in self.update_layers:
+            self.update_layers.remove((entity, tag))
+
     def run(self):
 
         framecount = 0
