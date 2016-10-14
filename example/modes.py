@@ -1,5 +1,6 @@
 import awesomeengine
 
+
 class MainMode(awesomeengine.mode.Mode):
 
     def enter(self):
@@ -30,6 +31,7 @@ class MainMode(awesomeengine.mode.Mode):
 
         e.remove_update_layer('update')
 
+
 class WelcomeMode(awesomeengine.mode.Mode):
 
     def enter(self):
@@ -45,8 +47,6 @@ class WelcomeMode(awesomeengine.mode.Mode):
 
         self.entities = [h, c]
         self.cams = [cam]
-
-
 
     def leave(self):
         e = awesomeengine.get_engine()

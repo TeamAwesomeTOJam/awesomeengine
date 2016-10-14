@@ -133,6 +133,13 @@ class Camera(object):
         self.renderer.draw_color = c
         self.renderer.draw_lines(*sdlpoints)
 
+    def draw_filled_circle(self, c, p, r):
+        p = self.transform_point(p)
+        r = self.transform_width(r)
+
+        primitives = sdl2hl.gfx.GfxPrimitives(self.renderer)
+        primitives.draw_filled_circle(p[0],p[1],r,c)
+
 
 def int_or_percent(value, base):
     if isinstance(value, str):
