@@ -91,9 +91,10 @@ class DynamicTextComponent(Component):
         self.event_handlers = (('draw', self.handle_draw),)
 
     def handle_draw(self, entity, camera):
-        font = engine.get_engine().resource_manager.get('font', (entity.font, entity.size))
-        surface = font.render_solid(entity.text, entity.colour)
-        texture = sdl2hl.Texture.from_surface(engine.get_engine().renderer, surface)
-        x,y = camera.screen_percent_point(entity.topleft)
-        r = rectangle.Rect(x + texture.w/2, y - texture.h/2, texture.w, texture.h)
-        camera.draw_image(r, texture)
+        if len(entity.text) > 0:
+            font = engine.get_engine().resource_manager.get('font', (entity.font, entity.size))
+            surface = font.render_solid(entity.text, entity.colour)
+            texture = sdl2hl.Texture.from_surface(engine.get_engine().renderer, surface)
+            x,y = camera.screen_percent_point(entity.topleft)
+            r = rectangle.Rect(x + texture.w/2, y - texture.h/2, texture.w, texture.h)
+            camera.draw_image(r, texture)

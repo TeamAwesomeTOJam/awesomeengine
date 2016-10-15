@@ -8,7 +8,7 @@ import rectangle
 class Camera(object):
 
     def __init__(self, renderer, entity, layers=[], hud=[]):
-        verify_attrs(entity, ['x', 'y', 'width', 'height', 'angle', 'screen_x', 'screen_y', 'screen_width', 'screen_height'])
+        verify_attrs(entity, ('x', 'y', 'width', 'height', 'angle', 'screen_x', 'screen_y', 'screen_width', 'screen_height'))
         self.entity = entity
         self.hud_entities = hud
         self.layers = layers
