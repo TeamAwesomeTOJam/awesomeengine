@@ -31,17 +31,12 @@ class EntityManager(object):
                         self._spatial_maps[tag].remove(entity)
                     except KeyError:
                         pass
-            
-            if hasattr(entity, 'name'):
-                del self._entities_by_name[entity.name]
-            
+            del self._entities_by_name[entity.name]
             self.entities.remove(entity)
             
         for entity in self.add_list:
             self.entities.add(entity)
-            
-            if hasattr(entity, 'name'):
-                self._entities_by_name[entity.name] = entity
+            self._entities_by_name[entity.name] = entity
             
             if hasattr(entity, 'tags'):
                 for tag in entity.tags:

@@ -1,4 +1,7 @@
+import uuid
+
 import engine
+
 
 class Entity(object):
     
@@ -12,6 +15,9 @@ class Entity(object):
         if 'components' in self.__dict__ or 'components' in self.static._fields:
             for component in self.components:
                 engine.get_engine().component_manager.add(component, self)
+                
+        if not ('name' in self.__dict__ or 'name' in self.static._fields):
+            self.name = str(uuid.uuid4())
 
     def __getattr__(self, name):
         return getattr(self.static, name)
