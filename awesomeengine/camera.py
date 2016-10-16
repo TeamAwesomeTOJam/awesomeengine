@@ -22,8 +22,8 @@ class Camera(object):
 
     def render(self):
 
-        screen_x = int_or_percent(self.entity.screen_x, engine.get_engine().window.size[0])
-        screen_y = int_or_percent(self.entity.screen_y, engine.get_engine().window.size[1])
+        screen_x = int_or_percent(self.entity.screen_x, engine.get().window.size[0])
+        screen_y = int_or_percent(self.entity.screen_y, engine.get().window.size[1])
 
         texture = sdl2hl.Texture(self.renderer, self.pixel_format, sdl2hl.TextureAccess.target, self._screen_width(), self._screen_height())
 
@@ -52,13 +52,13 @@ class Camera(object):
                            dest_rect=sdl2hl.Rect(screen_x, screen_y, self._screen_width(), self._screen_height()))
 
     def _screen_height(self):
-        return int_or_percent(self.entity.screen_height, engine.get_engine().window.size[1])
+        return int_or_percent(self.entity.screen_height, engine.get().window.size[1])
 
     def _screen_width(self):
-        return int_or_percent(self.entity.screen_width, engine.get_engine().window.size[0])
+        return int_or_percent(self.entity.screen_width, engine.get().window.size[0])
 
     def screen_percent_point(self, p):
-        return (int_or_percent(p[0],  engine.get_engine().window.size[0]), int_or_percent(p[1], engine.get_engine().window.size[1]))
+        return (int_or_percent(p[0],  engine.get().window.size[0]), int_or_percent(p[1], engine.get().window.size[1]))
 
     def hud_to_camera(self, p):
         p = self.screen_percent_point(p)
@@ -71,10 +71,10 @@ class Camera(object):
         return -a
 
     def hud_to_camera_length(self, w):
-        return int_or_percent(w, engine.get_engine().window.size[0])
+        return int_or_percent(w, engine.get().window.size[0])
 
     def hud_to_camera_height(self, h):
-        return int_or_percent(h, engine.get_engine().window.size[1])
+        return int_or_percent(h, engine.get().window.size[1])
 
 
     def world_to_camera(self, p):

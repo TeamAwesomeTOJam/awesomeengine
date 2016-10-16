@@ -9,7 +9,7 @@ class SimpleLayer(object):
         self.tag = tag
 
     def draw(self, camera):
-        for entity in engine.get_engine().entity_manager.get_by_tag(self.tag):
+        for entity in engine.get().entity_manager.get_by_tag(self.tag):
             entity.handle('draw', camera)
 
 class SimpleCroppedLayer(object):
@@ -18,7 +18,7 @@ class SimpleCroppedLayer(object):
         self.tag = tag
 
     def draw(self, camera):
-        for entity in engine.get_engine().entity_manager.get_in_area(self.tag, rectangle.from_entity(camera.entity)):
+        for entity in engine.get().entity_manager.get_in_area(self.tag, rectangle.from_entity(camera.entity)):
             entity.handle('draw', camera)
 
 class DepthSortedLayer(object):
@@ -28,7 +28,7 @@ class DepthSortedLayer(object):
 
     def draw(self, camera):
 
-        entities_to_draw = sorted(engine.get_engine().entity_manager.get_in_area(self.tag, rectangle.from_entity(camera.entity), precise=False),
+        entities_to_draw = sorted(engine.get().entity_manager.get_in_area(self.tag, rectangle.from_entity(camera.entity), precise=False),
                                   key=lambda entity: rectangle.from_entity(entity).bottom)
 
         for entity in entities_to_draw:
@@ -65,7 +65,7 @@ class GridLayer(object):
 class PhysicsLayer(object):
 
     def draw(self, camera):
-        world = engine.get_engine().box2d_world
+        world = engine.get().box2d_world
 
         query = DrawQueryCallback(camera)
 

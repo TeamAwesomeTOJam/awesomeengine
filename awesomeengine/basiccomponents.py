@@ -23,7 +23,7 @@ class DrawScaledImageComponent(Component):
         self.event_handlers = (('draw', self.handle_draw),)
 
     def handle_draw(self, entity, camera):
-        camera.draw_image(rectangle.from_entity(entity), engine.get_engine().resource_manager.get('image', entity.image))
+        camera.draw_image(rectangle.from_entity(entity), engine.get().resource_manager.get('image', entity.image))
 
 
 class VelocityMoveComponent(Component):
@@ -35,7 +35,7 @@ class VelocityMoveComponent(Component):
     def handle_update(self, entity, dt):
         entity.x += dt * entity.vx
         entity.y += dt * entity.vy
-        engine.get_engine().entity_manager.update_position(entity)
+        engine.get().entity_manager.update_position(entity)
 
 
 class ForceVelocityComponent(Component):
@@ -58,9 +58,9 @@ class StaticTextComponent(Component):
     def add(self, entity):
         Component.add(self, entity)
 
-        font = engine.get_engine().resource_manager.get('font', (entity.font, entity.size))
+        font = engine.get().resource_manager.get('font', (entity.font, entity.size))
         surface = font.render_solid(entity.text, entity.colour)
-        entity.texture = sdl2hl.Texture.from_surface(engine.get_engine().renderer, surface)
+        entity.texture = sdl2hl.Texture.from_surface(engine.get().renderer, surface)
 
         entity.width = entity.texture.w
         entity.height = entity.texture.h
@@ -92,9 +92,9 @@ class DynamicTextComponent(Component):
 
     def handle_draw(self, entity, camera):
         if len(entity.text) > 0:
-            font = engine.get_engine().resource_manager.get('font', (entity.font, entity.size))
+            font = engine.get().resource_manager.get('font', (entity.font, entity.size))
             surface = font.render_solid(entity.text, entity.colour)
-            texture = sdl2hl.Texture.from_surface(engine.get_engine().renderer, surface)
+            texture = sdl2hl.Texture.from_surface(engine.get().renderer, surface)
             x,y = camera.screen_percent_point(entity.topleft)
             r = rectangle.Rect(x + texture.w/2, y - texture.h/2, texture.w, texture.h)
             camera.draw_image(r, texture)

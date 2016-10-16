@@ -14,7 +14,7 @@ class Entity(object):
             
         if 'components' in self.__dict__ or 'components' in self.static._fields:
             for component in self.components:
-                engine.get_engine().component_manager.add(component, self)
+                engine.get().component_manager.add(component, self)
                 
         if not ('name' in self.__dict__ or 'name' in self.static._fields):
             self.name = str(uuid.uuid4())
@@ -24,7 +24,7 @@ class Entity(object):
     
     @property
     def static(self):
-        return engine.get_engine().resource_manager.get('entity', self._static_data_name)
+        return engine.get().resource_manager.get('entity', self._static_data_name)
         
     def register_handler(self, event, handler):
         self._handlers.setdefault(event, []).append(handler)

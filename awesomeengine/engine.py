@@ -15,13 +15,13 @@ import rectangle
 
 import Box2D
 
-_engine = None
+_instance = None
 
 class Engine(object):
 
     def __init__(self, res_prefix):
-        global _engine
-        _engine = self
+        global _instance
+        _instance = self
 
         sdl2hl.init(sdl2hl.InitFlag.everything)
         sdl2hl.mixer.init(sdl2hl.mixer.AudioInitFlag.ogg)
@@ -41,7 +41,6 @@ class Engine(object):
         self.component_manager.register_module(basiccomponents)
 
         self.entity_manager = entitymanager.EntityManager()
-
 
         self.window = None
         self.cameras = []
@@ -65,14 +64,14 @@ class Engine(object):
                 if 'entity' in contact.fixtureA.body.userData:
                     contact.fixtureA.body.userData['entity'].handle('contact', contact.fixtureB.body.userData.get('entity', None), True)
                 if 'entity' in contact.fixtureB.body.userData:
-                    contact.fixtureB.body.userData['entity'].handle('contact', contact.fixtureA.body.userData.get('entity', None), False)                
+                    contact.fixtureB.body.userData['entity'].handle('contact', contact.fixtureA.body.userData.get('entity', None), False)
             def EndContact(self, contact):
                 pass
             def PreSolve(self, contact, oldManifold):
                 pass
             def PostSolve(self, contact, impulse):
                 pass
-    
+
         if self.box2d_world is None:
             self.box2d_world = Box2D.b2World(gravity=gravity, doSleep=True, contactListener=ContactListener())
 
@@ -199,5 +198,5 @@ class Engine(object):
 
 
 
-def get_engine():
-    return _engine
+def get():
+    return _instance

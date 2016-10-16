@@ -18,7 +18,7 @@ class InputManager:
         self._controllers = [sdl2hl.GameController(i) for i in range(sdl2hl.GameController.get_count())]
             
     def process_events(self):
-        self._input_map = engine.get_engine().resource_manager.get('inputmap', 'default')
+        self._input_map = engine.get().resource_manager.get('inputmap', 'default')
         processed_events = []
 
         for e in sdl2hl.events.poll():

@@ -45,7 +45,7 @@ def LoadEntityData(prefix, key):
     if 'includes' in definition:
         flattened = {}
         for include_name in definition['includes']:
-            include = engine.get_engine().resource_manager.get('entity', include_name)
+            include = engine.get().resource_manager.get('entity', include_name)
             for field in include._fields:
                 flattened[field] = getattr(include, field)
         for key, value in definition.iteritems():
@@ -59,7 +59,7 @@ def LoadEntityData(prefix, key):
     return freezejson.freeze_value(definition)
     
 def LoadImage(prefix, key):
-    texture = sdl2hl.image.load_texture(engine.get_engine().renderer, os.path.join(prefix, 'images', key))
+    texture = sdl2hl.image.load_texture(engine.get().renderer, os.path.join(prefix, 'images', key))
 
     return texture
 
@@ -123,7 +123,7 @@ def LoadMap(prefix, key):
                 for x, cell in enumerate(line.split(',')):
                     if cell.strip() != '':
                         for entity in legend[cell.strip()]:
-                            entity_data = engine.get_engine().resource_manager.get('entity', entity)
+                            entity_data = engine.get().resource_manager.get('entity', entity)
                             entities.append((entity, {'x': x*tile_width + entity_data.width/2.0, 'y': y*tile_height + entity_data.height/2.0}))
                 y -= 1
         return entities
