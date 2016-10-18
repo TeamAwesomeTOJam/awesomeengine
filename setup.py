@@ -29,6 +29,6 @@ setup(
     test_suite='tests',
 
     install_requires=[
-        'sdl2hl>=0.2.0',
+        'sdl2hl>=0.3.2',
     ],
 )

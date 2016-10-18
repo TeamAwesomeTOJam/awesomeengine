@@ -11,14 +11,14 @@ class Mode:
     def leave(self):
         pass
 
-    # @abstractmethod
-    # def handle_event(self, event):
-    #     pass
+    @abstractmethod
+    def handle_event(self, event):
+        pass
 
-    # @abstractmethod
-    # def update(self, dt):
-    #     pass
+    @abstractmethod
+    def update(self, dt):
+        pass
 
-    # @abstractmethod
-    # def draw(self):
-    #     pass
+    @abstractmethod
+    def draw(self):
+        pass
