@@ -140,6 +140,17 @@ class Camera(object):
         primitives = sdl2hl.gfx.GfxPrimitives(self.renderer)
         primitives.draw_filled_circle(p[0],p[1],r,c)
 
+    def draw_filled_trigon(self, c, p1, p2, p3):
+        p1 = self.transform_point(p1)
+        p2 = self.transform_point(p2)
+        p3 = self.transform_point(p3)
+
+        primitives = sdl2hl.gfx.GfxPrimitives(self.renderer)
+        primitives.draw_filled_trigon(p1[0], p1[1],
+                                      p2[0], p2[1],
+                                      p3[0], p3[1],
+                                      c)
+
 
 def int_or_percent(value, base):
     if isinstance(value, str):
