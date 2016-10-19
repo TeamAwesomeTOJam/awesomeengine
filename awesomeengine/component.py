@@ -1,20 +1,23 @@
-from abc import ABCMeta, abstractmethod
+from abc import ABCMeta
 
 
 class Component:
     __metaclass__ = ABCMeta
 
-    @abstractmethod
     def add(self, entity):
-        pass
+        verify_attrs(entity, self.required_attrs)
+    
+        for event, handler in self.event_handlers:
+            entity.register_handler(event, handler)
 
-    @abstractmethod
     def remove(self, entity):
-        pass
-
-def verify_attrs(entity, attrs):
+        for event, handler in self.event_handlers:
+            entity.unregister_handler(event, handler)
+        
+        
+def verify_attrs(entity, required_attrs):
     missing_attrs = []
-    for attr in attrs:
+    for attr in required_attrs:
         if isinstance(attr, tuple):
             attr, default = attr
             if not hasattr(entity, attr):
@@ -23,4 +26,6 @@ def verify_attrs(entity, attrs):
             if not hasattr(entity, attr):
                 missing_attrs.append(attr)
     if len(missing_attrs) > 0:
-        raise AttributeError("entity [%s] is missing required attributes [%s]" % (entity._static_data_name, missing_attrs))
+        raise AttributeError(
+            "entity [%s] is missing required attributes [%s]" 
+            % (entity._static_data_name, missing_attrs))
