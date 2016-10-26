@@ -117,3 +117,21 @@ class DynamicTextComponent(Component):
             x,y = camera.screen_percent_point(entity.topleft)
             r = rectangle.Rect(x + texture.w/2, y - texture.h/2, texture.w, texture.h)
             camera.draw_image(r, texture)
+
+class StaticPhysicsRectComponent(Component):
+
+    def add(self, entity):
+        verify_attrs(entity, ['x', 'y', 'width', 'height'])
+
+        r = rectangle.from_entity(entity)
+        v = [(-r.w/2.0, -r.h/2.0),
+             (-r.w/2.0,  r.h/2.0),
+             ( r.w/2.0,  r.h/2.0),
+             ( r.w/2.0, -r.h/2.0)]
+
+        entity.body = engine.get_engine().box2d_world.CreateStaticBody(position=(entity.x, entity.y))
+        entity.body.userData = {'entity' : entity}
+        entity.body.CreatePolygonFixture(vertices=v)
+
+    def remove(self, entity):
+        pass
