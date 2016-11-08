@@ -151,6 +151,14 @@ class Camera(object):
                                       p3[0], p3[1],
                                       c)
 
+    def draw_filled_rect(self, c, r):
+        sdlrect = sdl2hl.Rect(self.transform_point(r.top_left)[0],
+                              self.transform_point(r.top_right)[1],
+                              self.transform_width(r.w),
+                              self.transform_height(r.h))
+        self.renderer.draw_color = c
+        self.renderer.fill_rect(sdlrect)
+
 
 def int_or_percent(value, base):
     if isinstance(value, str):
@@ -159,3 +167,4 @@ def int_or_percent(value, base):
             return int(percent * base)
     else:
         return int(value)
+
