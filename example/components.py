@@ -17,7 +17,7 @@ class InputRotateComponent(Component):
     def handle_update(self, entity, dt):
         entity.angle = (entity.angle + entity.va*dt) % 360
 
-        engine.get_engine().entity_manager.update_position(entity)
+        engine.get().entity_manager.update_position(entity)
 
     def handle_input(self, entity, action, value):
         if action == 'ccw' and value == 1:
@@ -79,6 +79,6 @@ class ManagerComponent(Component):
 
     def handle_input(self, entity, action, value):
         if action == 'welcome' and value == 1:
-            engine.get_engine().change_mode('welcome')
+            engine.get().change_mode('welcome')
         elif action == 'main' and value == 1:
-            engine.get_engine().change_mode('main')
+            engine.get().change_mode('main')
