@@ -1,7 +1,7 @@
 import sdl2hl
 import engine
 import math
-from component import verify_attrs
+from behavior import verify_attrs
 import rectangle
 
 

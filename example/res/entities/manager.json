@@ -1,4 +1,4 @@
 {
   "name": "manager",
-  "components": ["ManagerComponent"]
+  "behaviors": ["ChangeMode"]
 }

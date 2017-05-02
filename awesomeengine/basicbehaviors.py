@@ -1,36 +1,36 @@
 import sdl2hl
 
-from component import *
+from behavior import *
 import engine
 import rectangle
 
 
-class DrawHitBoxComponent(Component):
+class DrawHitBox(Behavior):
 
     def __init__(self):
         self.required_attrs = ('x', 'y', 'width', 'height', ('colour', (255,0,255,255)))
-        self.event_handlers = (('draw', self.handle_draw),)
+        self.event_handlers = {'draw': self.handle_draw}
 
     def handle_draw(self, entity, camera):
         camera.draw_rect(entity.colour, rectangle.from_entity(entity))
         camera.draw_rect(entity.colour, rectangle.from_entity(entity).bounding_rect())
 
 
-class DrawScaledImageComponent(Component):
+class DrawScaledImage(Behavior):
 
     def __init__(self):
         self.required_attrs = ('x', 'y', 'width', 'height', 'image', ('angle', 0))
-        self.event_handlers = (('draw', self.handle_draw),)
+        self.event_handlers = {'draw': self.handle_draw}
 
     def handle_draw(self, entity, camera):
         camera.draw_image(rectangle.from_entity(entity), engine.get().resource_manager.get('image', entity.image))
 
 
-class VelocityMoveComponent(Component):
+class MoveUsingVelocity(Behavior):
 
     def __init__(self):
         self.required_attrs = ('x', 'y', ('vx', 0), ('vy', 0))
-        self.event_handlers = (('update', self.handle_update),)
+        self.event_handlers = {'update': self.handle_update}
 
     def handle_update(self, entity, dt):
         entity.x += dt * entity.vx
@@ -38,26 +38,24 @@ class VelocityMoveComponent(Component):
         engine.get().entity_manager.update_position(entity)
 
 
-class ForceVelocityComponent(Component):
+class CalculateVelocity(Behavior):
     
     def __init__(self):
         self.required_attrs = ('mass', ('fx', 0), ('fy', 0), ('vx', 0), ('vy', 0))
-        self.event_handlers = (('update', self.handle_update),)
+        self.event_handlers = {'update': self.handle_update}
 
     def handle_update(self, entity, dt):
         entity.vx += dt * entity.fx / entity.mass
         entity.vy += dt * entity.fy / entity.mass
 
 
-class StaticTextComponent(Component):
+class DrawStaticText(Behavior):
 
     def __init__(self):
         self.required_attrs = ('colour', 'size', 'text', 'font')
-        self.event_handlers = (('draw', self.handle_draw),)
+        self.event_handlers = {'draw': self.handle_draw}
 
     def add(self, entity):
-        Component.add(self, entity)
-
         font = engine.get().resource_manager.get('font', (entity.font, entity.size))
         surface = font.render_solid(entity.text, entity.colour)
         entity.texture = sdl2hl.Texture.from_surface(engine.get().renderer, surface)
@@ -66,7 +64,6 @@ class StaticTextComponent(Component):
         entity.height = entity.texture.h
 
     def handle_draw(self, entity, camera):
-
         try:
             x_percent = entity.x_percent
             y_percent = entity.y_percent
@@ -84,11 +81,11 @@ class StaticTextComponent(Component):
         camera.draw_image(rectangle.Rect(x, y, entity.width, entity.height, a), entity.texture)
 
 
-class DynamicTextComponent(Component):
+class DrawDynamicText(Behavior):
 
     def __init__(self):
         self.required_attrs = ('colour', 'size', 'text', 'topleft', 'font')
-        self.event_handlers = (('draw', self.handle_draw),)
+        self.event_handlers = {'draw': self.handle_draw}
 
     def handle_draw(self, entity, camera):
         if len(entity.text) > 0:
