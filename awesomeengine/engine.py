@@ -33,7 +33,8 @@ class Engine(object):
         self.resource_manager.register_loader('image', resourcemanager.LoadImage)
         self.resource_manager.register_loader('sound', resourcemanager.LoadSound)
         self.resource_manager.register_loader('font', resourcemanager.LoadFont)
-        self.resource_manager.register_loader('map', resourcemanager.LoadMap)
+        self.resource_manager.register_loader('map', resourcemanager.LoadJSONMap)
+        self.resource_manager.register_saver('map', resourcemanager.SaveJSONMap)
 
         self.behavior_manager = behaviormanager.BehaviorManager()
         self.behavior_manager.register_module(basicbehaviors)
@@ -52,21 +53,6 @@ class Engine(object):
         self.telemetry_font = self.resource_manager.get('font', ('LiberationSans-Regular', 24))
 
         self.fps_queue = collections.deque(maxlen=30)
-
-    def add_entity(self, static_data_name, **kwargs):
-        ent = entity.Entity(static_data_name, **kwargs)
-        self.entity_manager.add_entity(ent)
-        return ent
-
-    def add_entities_from_map(self, map_name):
-        entity_info = self.resource_manager.get('map', map_name)
-        for entity_name, overrides in entity_info:
-            e = entity.Entity(entity_name, **overrides)
-            self.entity_manager.add_entity(e)
-        self.entity_manager.commit_changes()
-
-    def remove_entity(self, entity):
-        self.entity_manager.remove_entity(entity)
 
     def create_window(self, size=None, pos=None, title='awesome', *flags):
         if size is None:

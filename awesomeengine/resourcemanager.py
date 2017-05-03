@@ -12,10 +12,14 @@ class ResourceManager(object):
     def __init__(self, prefix):
         self.prefix = prefix
         self.loaders = {}
+        self.savers = {}
         self.cache = {}
     
     def register_loader(self, res_type, loader):
         self.loaders[res_type] = loader
+        
+    def register_saver(self, res_type, saver):
+        self.savers[res_type] = saver
     
     def get(self, res_type, key):
         try:
@@ -24,6 +28,9 @@ class ResourceManager(object):
             value = self.loaders[res_type](self.prefix, key)
             self.cache[(res_type, key)] = value
             return value
+    
+    def save(self, res_type, key, data):
+        self.savers[res_type](self.prefix, key, data)
     
     def clear(self):
         self.cache = {}
@@ -98,7 +105,7 @@ def LoadInputMapping(prefix, key):
 def LoadFont(prefix, key):
     return sdl2hl.ttf.Font.from_path(os.path.join(prefix, 'fonts', key[0] + '.ttf'),key[1])
     
-def LoadMap(prefix, key):
+def LoadCSVMap(prefix, key):
     with open(os.path.join(prefix, 'maps', key + '.csv')) as in_file:
         section = 0
         y = 0
@@ -127,4 +134,13 @@ def LoadMap(prefix, key):
                             entities.append((entity, {'x': x*tile_width + entity_data.width/2.0, 'y': y*tile_height + entity_data.height/2.0}))
                 y -= 1
         return entities
+        
+def LoadJSONMap(prefix, key):
+    with open(os.path.join(prefix, 'maps', key + '.json')) as in_file:
+        return json.load(in_file)
+    
+def SaveJSONMap(prefix, key, data):
+    with open(os.path.join(prefix, 'maps', key + '.json'), 'wb') as out_file:
+        return json.dump(data, out_file)    
+
 

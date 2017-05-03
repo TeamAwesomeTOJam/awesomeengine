@@ -1,5 +1,6 @@
 import weakref
 
+import engine
 import spatialmap
 
 
@@ -16,21 +17,37 @@ class EntityManager(object):
         self.remove_list = []
         self.add_list = []
     
-    def add_entity(self, entity):
-        self.add_list.append(entity)
+    def add(self, *args):
+        self.add_list += args
+
+    def add_from_map(self, map_name):
+        entity_info = engine.get().resource_manager.get('map', map_name)
+        for static_data_name, kwargs in entity_info:
+            e = entity.Entity(static_data_name, **kwargs)
+            self.add_entity(e)
     
-    def remove_entity(self, entity):     
-        self.remove_list.append(entity)
+    def save_to_map(self, map_name):
+        entity_info = []
+        for entity in self.entities:
+            static_data_name = entity._static_data_name
+            kwargs = entity.__dict__.copy()
+            del kwargs['_static_data_name']
+            
+            entity_info.append((static_data_name, kwargs))
+            
+        engine.get().resource_manager.save('map', map_name, entity_info)
+    
+    def remove(self, *args):     
+        self.remove_list += args
     
     def commit_changes(self):
         for entity in self.remove_list:
-            if hasattr(entity, 'tags'):
-                for tag in entity.tags:
-                    self._entities_by_tag[tag].remove(entity)
-                    try:
-                        self._spatial_maps[tag].remove(entity)
-                    except KeyError:
-                        pass
+            for tag in getattr(entity, 'tags', []):
+                self._entities_by_tag[tag].remove(entity)
+                try:
+                    self._spatial_maps[tag].remove(entity)
+                except KeyError:
+                    pass
             del self._entities_by_name[entity.name]
             self.entities.remove(entity)
             
@@ -38,15 +55,14 @@ class EntityManager(object):
             self.entities.add(entity)
             self._entities_by_name[entity.name] = entity
             
-            if hasattr(entity, 'tags'):
-                for tag in entity.tags:
-                    if not tag in self._entities_by_tag:
-                        self._entities_by_tag[tag] = weakref.WeakSet()
-                    self._entities_by_tag[tag].add(entity)
-                    
-                    if not tag in self._spatial_maps:
-                        self._spatial_maps[tag] = spatialmap.SpatialMap(GRID_SIZE)
-                    self._spatial_maps[tag].add(entity)
+            for tag in getattr(entity, 'tags', []):
+                if not tag in self._entities_by_tag:
+                    self._entities_by_tag[tag] = weakref.WeakSet()
+                self._entities_by_tag[tag].add(entity)
+                
+                if not tag in self._spatial_maps:
+                    self._spatial_maps[tag] = spatialmap.SpatialMap(GRID_SIZE)
+                self._spatial_maps[tag].add(entity)
         
         self.add_list = []
         self.remove_list = []

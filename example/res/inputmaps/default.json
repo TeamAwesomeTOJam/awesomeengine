@@ -1,5 +1,8 @@
 {
   "KeyCode.escape"  : ["ENGINE", "QUIT"],
+  
+  "KeyCode.n3" : ["GAME", "SAVE_MAP"],
+  
   "KeyCode.q" : ["camera", "ccw"],
   "KeyCode.e" : ["camera", "cw"],
 
