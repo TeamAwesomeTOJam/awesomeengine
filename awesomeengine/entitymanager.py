@@ -24,6 +24,14 @@ class EntityManager(object):
     
     def commit_changes(self):
         for entity in self.remove_list:
+            if hasattr(entity, 'tags'):
+                for tag in entity.tags:
+                    self._entities_by_tag[tag].remove(entity)
+                    try:
+                        self._spatial_maps[tag].remove(entity)
+                    except KeyError:
+                        pass
+            del self._entities_by_name[entity.name]
             self.entities.remove(entity)
             
         for entity in self.add_list:

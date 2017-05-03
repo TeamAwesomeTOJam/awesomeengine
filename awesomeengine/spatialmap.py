@@ -24,7 +24,19 @@ class SpatialMap(object):
             self.reverse_map[entity] = grid_squares
         except AttributeError:
             pass
-    
+            
+    def remove(self, entity):
+        try:
+            for square in self.reverse_map[entity] | self._get_grid_squares(rectangle.from_entity(entity)):
+                if square in self.map:
+                    self.map[square].discard(entity)
+                    if len(self.map[square]) == 0:
+                        del self.map[square]
+                
+            del self.reverse_map[entity]
+        except AttributeError:
+            pass
+                
     def update(self, entity):
         old_squares = self.reverse_map[entity]
         new_squares = self._get_grid_squares(rectangle.from_entity(entity))
