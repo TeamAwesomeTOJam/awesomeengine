@@ -33,5 +33,7 @@
   "KeyCode.n1" : ["manager", "welcome"],
   "KeyCode.n2" : ["manager", "main"],
 
-  "MouseMotion" : ["mouse", "move"]
+  "Mouse.Motion" : ["mouse", "move"],
+  "Mouse.1" : ["mouse", "cw"],
+  "Mouse.3" : ["mouse", "ccw"]
 }
