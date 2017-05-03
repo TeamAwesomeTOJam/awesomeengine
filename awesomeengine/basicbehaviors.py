@@ -122,13 +122,97 @@ class WorldMouseFollower(Behavior):
             # get the camera
             cams = engine.get().entity_manager.get_by_tag('camera')
             for c in cams:
-                r = rectangle.Rect(c.screen_x, c.screen_y, c.screen_width, c.screen_height)
+                r = rectangle.Rect(c.screen_x + c.screen_width/2, c.screen_y + c.screen_height/2, c.screen_width, c.screen_height)
                 if r.contains(p):
                     world_point = c.camera.screen_to_world(p)
                     entity.x = world_point[0]
                     entity.y = world_point[1]
                     entity.handle('move')
                     break
+
+class ScreenMouseFollower(Behavior):
+
+    def __init__(self):
+        self.required_attrs = ('x', 'y')
+        self.event_handlers = {'input': self.handle_input}
+
+    def handle_input(self, entity, action, value):
+        if action == 'move':
+            entity.x, entity.y = (value[0][0], value[0][1])
+            entity.handle('move')
+
+class HudWorldMouseClicker(Behavior):
+
+    def __init__(self):
+        self.required_attrs = ('x', 'y',
+                               ('hud_pressed_list', []),
+                               ('world_pressed_list', []))
+        self.event_handlers = {'input' : self.handle_input,
+                               'move' : self.handle_move}
+
+
+    def handle_input(self, entity, action, value):
+        if action == 'click':
+            if value == 1:
+                cams = engine.get().entity_manager.get_by_tag('camera')
+                for c in cams:
+                    r = rectangle.Rect(c.screen_x + c.screen_width / 2, c.screen_y + c.screen_height / 2, c.screen_width, c.screen_height)
+                    if r.contains((entity.x, entity.y)):
+                        #we found our camera, first check hud
+                        hud_point = c.camera.screen_to_hud((entity.x, entity.y))
+                        for e in c.camera.hud_entities:
+                            hud_ent_rect = rectangle.from_entity(e)
+                            if hud_ent_rect.contains(hud_point):
+                                entity.hud_pressed_list.append(e)
+                                e.handle('pressed')
+                        #if we found a hud element, we are done
+                        if entity.hud_pressed_list:
+                            return
+                        #now check world
+                        world_point = c.camera.screen_to_world((entity.x, entity.y))
+                        entity.world_pressed_list = engine.get().entity_manager.get_in_area('clickable', rectangle.Rect(world_point[0], world_point[1], 0, 0))
+                        for e in entity.world_pressed_list:
+                            e.handle('pressed')
+        if value == 0:
+            for e in entity.world_pressed_list:
+                e.handle('released')
+                e.handle('clicked')
+            for e in entity.hud_pressed_list:
+                e.handle('released')
+                e.handle('clicked')
+
+    def handle_move(self, entity):
+        if entity.world_pressed_list:
+            cams = engine.get().entity_manager.get_by_tag('camera')
+            for c in cams:
+                r = rectangle.Rect(c.screen_x + c.screen_width / 2, c.screen_y + c.screen_height / 2, c.screen_width,
+                                   c.screen_height)
+                if r.contains((entity.x, entity.y)):
+                    world_point = c.camera.screen_to_world((entity.x, entity.y))
+                    new_world_pressed_list = engine.get().entity_manager.get_in_area('clickable', rectangle.Rect(world_point[0], world_point[1],0,0))
+                    for e in entity.world_pressed_list:
+                        if e not in new_world_pressed_list:
+                            e.handle('released')
+                    entity.world_pressed_list = new_world_pressed_list
+        if entity.hud_pressed_list:
+            cams = engine.get().entity_manager.get_by_tag('camera')
+            for c in cams:
+                r = rectangle.Rect(c.screen_x + c.screen_width / 2, c.screen_y + c.screen_height / 2, c.screen_width,
+                                   c.screen_height)
+                if r.contains((entity.x, entity.y)):
+                    hud_point = c.camera.screen_to_hud((entity.x, entity.y))
+                    new_hud_pressed_list = []
+                    for e in c.camera.hud_entities:
+                        hud_ent_rect = rectangle.from_entity(e)
+                        if hud_ent_rect.contains(hud_point):
+                            new_hud_pressed_list.append(e)
+                    for e in entity.hud_pressed_list:
+                        if e not in new_hud_pressed_list:
+                            e.handle('released')
+                    entity.hud_pressed_list = new_hud_pressed_list
+
+
+
 
 class MouseClicker(Behavior):
 

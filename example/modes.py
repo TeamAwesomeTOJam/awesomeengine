@@ -91,14 +91,15 @@ class ButtonTestMode(awesomeengine.mode.Mode):
         e = awesomeengine.get()
         c = Entity('button_cam')
         button = Entity('button')
-        m = Entity('mouse')
+        m = Entity('button_mouse')
+        h = Entity('hud_button')
 
-        e.entity_manager.add(button, c, m)
+        e.entity_manager.add(button, c, m, h)
         l2 = awesomeengine.layer.SolidBackgroundLayer((0, 0, 0, 255))
         l = awesomeengine.layer.SimpleCroppedLayer('draw')
-        cam = Camera(awesomeengine.get().renderer, c, [l2, l], [])
+        cam = Camera(awesomeengine.get().renderer, c, [l2, l], [h])
 
-        self.entities = [button, c, m]
+        self.entities = [button, c, m, h]
         self.cams = [cam]
 
     def leave(self):

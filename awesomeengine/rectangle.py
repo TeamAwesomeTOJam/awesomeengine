@@ -90,7 +90,7 @@ class Rect(object):
         x = p[0]
         y = p[1]
         if self.a == 0:
-            return self.x <= x <= self.x + self.w and self.y <= y <= self.y + self.h
+            return self.x - self.w/2 <= x <= self.x + self.w/2 and self.y - self.h/2 <= y <= self.y + self.h/2
         else:
             #TODO check rotated rects
             return False

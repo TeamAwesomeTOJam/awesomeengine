@@ -128,6 +128,17 @@ class Camera(object):
 
         return wx,wy
 
+    def screen_to_hud(self, p):
+        x, y = p
+        cx = x - int_or_percent(self.entity.screen_x, engine.get().window.size[0])
+        cy = y - int_or_percent(self.entity.screen_y, engine.get().window.size[1])
+
+        # flip y
+        cy = self._screen_height() - cy
+
+        return cx,cy
+
+
 
 
     def world_to_camera_angle(self, a):
