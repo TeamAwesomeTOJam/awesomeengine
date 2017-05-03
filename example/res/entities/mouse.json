@@ -1,0 +1,11 @@
+{
+  "x": 0,
+  "y": 0,
+  "width": 20,
+  "height": 20,
+  "angle" : 0,
+  "image": "Smiley.png",
+  "name" : "mouse",
+  "components" : ["DrawHitBoxComponent", "DrawScaledImageComponent", "InputRotateComponent", "MouseComponent"],
+  "tags" : ["draw","update"]
+}

@@ -28,5 +28,7 @@
   "KeyCode.l" : ["hud_smile", "right"],
 
   "KeyCode.n1" : ["manager", "welcome"],
-  "KeyCode.n2" : ["manager", "main"]
+  "KeyCode.n2" : ["manager", "main"],
+
+  "MouseMotion" : ["mouse", "move"]
 }

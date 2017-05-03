@@ -10,6 +10,7 @@ class MainMode(awesomeengine.mode.Mode):
         h_smile = e.add_entity('hud_smile')
         c = e.add_entity('camera')
         c2 = e.add_entity('camera2')
+        m = e.add_entity('mouse')
 
         l = awesomeengine.layer.SimpleCroppedLayer('draw')
         l2 = awesomeengine.layer.SolidBackgroundLayer((0, 0, 0, 255))
@@ -21,7 +22,7 @@ class MainMode(awesomeengine.mode.Mode):
         cam2 = Camera(awesomeengine.get().renderer, c2, [l3, l], hud=[h_smile])
 
         self.cams = [cam1, cam2]
-        self.entities = [box, h_smile, c, c2]
+        self.entities = [box, h_smile, c, c2, m]
 
         #e.add_update_layer('update')
 

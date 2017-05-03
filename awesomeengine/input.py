@@ -48,11 +48,15 @@ class InputManager:
                     processed_events.append(event)
                     
             elif e.type == sdl2hl.EventType.mousebuttondown:
-                event = self._new_event(None, e.button, 1)
+                event = self._new_event(None, 'Mouse' + str(e.button), (1, (e.x, e.y)))
                 if event != None:
                     processed_events.append(event)
             elif e.type == sdl2hl.EventType.mousebuttonup:
-                event = self._new_event(None, e.button, 0)
+                event = self._new_event(None, 'Mouse' + str(e.button), (0, (e.x, e.y)))
+                if event != None:
+                    processed_events.append(event)
+            elif e.type == sdl2hl.EventType.mousemotion:
+                event = self._new_event(None, 'MouseMotion', ((e.x, e.y), (e.xrel, e.yrel)))
                 if event != None:
                     processed_events.append(event)
             else:

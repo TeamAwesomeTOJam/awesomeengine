@@ -10,6 +10,7 @@ class Camera(object):
     def __init__(self, renderer, entity, layers=[], hud=[]):
         verify_attrs(entity, ('x', 'y', 'width', 'height', 'angle', 'screen_x', 'screen_y', 'screen_width', 'screen_height'))
         self.entity = entity
+        entity.camera = self
         self.hud_entities = hud
         self.layers = layers
         self.renderer = renderer
@@ -95,6 +96,39 @@ class Camera(object):
         sy = self.transform_height(cy)
 
         return int(sx), int(self._screen_height() - sy)
+
+    def screen_to_world(self, p):
+        x,y = p
+        cx = x - int_or_percent(self.entity.screen_x, engine.get().window.size[0])
+        cy = y - int_or_percent(self.entity.screen_y, engine.get().window.size[1])
+
+        #flip y
+        cy = self._screen_height() - cy
+
+        #stretch
+        stretch_x = cx * self.entity.width / self._screen_width()
+        stretch_y = cy * self.entity.height / self._screen_height()
+
+        #move to center coords
+        tx = stretch_x - self.entity.width / 2
+        ty = stretch_y - self.entity.height / 2
+
+        #rotate
+        if self.entity.angle == 0:
+            rx = tx
+            ry = ty
+        else:
+            #TODO work for rotated cameras
+            rx = tx * math.cos(math.radians(-self.entity.angle)) + ty * math.sin(math.radians(-self.entity.angle))
+            ry = ty * math.cos(math.radians(-self.entity.angle)) - tx * math.sin(math.radians(-self.entity.angle))
+
+        #move to world coordinates
+        wx = rx + self.entity.x
+        wy = ry + self.entity.y
+
+        return wx,wy
+
+
 
     def world_to_camera_angle(self, a):
         return self.entity.angle - a

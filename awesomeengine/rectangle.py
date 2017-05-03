@@ -85,3 +85,12 @@ class Rect(object):
         nheight = int(max(sinw + cosh, sinw - cosh, -1 * sinw + cosh, -1 * sinw - cosh))
 
         return Rect(self.x, self.y, nwidth, nheight)
+
+    def contains(self, p):
+        x = p[0]
+        y = p[1]
+        if self.a == 0:
+            return self.x <= x <= self.x + self.w and self.y <= y <= self.y + self.h
+        else:
+            #TODO check rotated rects
+            return False

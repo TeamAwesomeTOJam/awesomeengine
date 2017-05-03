@@ -98,3 +98,24 @@ class DynamicTextComponent(Component):
             x,y = camera.screen_percent_point(entity.topleft)
             r = rectangle.Rect(x + texture.w/2, y - texture.h/2, texture.w, texture.h)
             camera.draw_image(r, texture)
+
+class MouseComponent(Component):
+
+    def __init__(self):
+        self.required_attrs = ('x', 'y')
+        self.event_handlers = (('input', self.handle_input),)
+
+    def handle_input(self, entity, action, value):
+        if action == 'move':
+            p = (value[0][0], value[0][1])
+            # get the camera
+            cams = engine.get().entity_manager.get_by_tag('camera')
+            for c in cams:
+                r = rectangle.Rect(c.screen_x, c.screen_y, c.screen_width, c.screen_height)
+                if r.contains(p):
+                    world_point = c.camera.screen_to_world(p)
+                    entity.x = world_point[0]
+                    entity.y = world_point[1]
+                    break
+            #entity.x = value[0][0]
+            #entity.y = value[0][1]

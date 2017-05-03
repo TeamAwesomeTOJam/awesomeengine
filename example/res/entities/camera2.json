@@ -10,6 +10,6 @@
   "screen_height": 480,
 
   "angle": 0,
-  "tags" : [],
+  "tags" : ["camera"],
   "components" : []
 }
