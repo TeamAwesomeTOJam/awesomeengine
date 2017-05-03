@@ -2,18 +2,16 @@ import sdl2hl
 import sdl2hl.mixer
 import sdl2hl.ttf
 
-import basiccomponents
+import basicbehaviors
 import camera
 import clock
-import componentmanager
+import behaviormanager
 import entity
 import entitymanager
 import input
 import resourcemanager
 import collections
 import rectangle
-
-import Box2D
 
 _instance = None
 
@@ -37,8 +35,8 @@ class Engine(object):
         self.resource_manager.register_loader('font', resourcemanager.LoadFont)
         self.resource_manager.register_loader('map', resourcemanager.LoadMap)
 
-        self.component_manager = componentmanager.ComponentManager()
-        self.component_manager.register_module(basiccomponents)
+        self.behavior_manager = behaviormanager.BehaviorManager()
+        self.behavior_manager.register_module(basicbehaviors)
 
         self.entity_manager = entitymanager.EntityManager()
 

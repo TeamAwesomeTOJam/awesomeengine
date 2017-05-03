@@ -11,5 +11,5 @@
 
   "angle": 0,
   "tags" : ["camera"],
-  "components" : []
+  "behaviors" : []
 }

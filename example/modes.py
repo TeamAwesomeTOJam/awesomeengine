@@ -16,24 +16,17 @@ class MainMode(awesomeengine.mode.Mode):
         l2 = awesomeengine.layer.SolidBackgroundLayer((0, 0, 0, 255))
         l3 = awesomeengine.layer.SolidBackgroundLayer((100, 100, 100, 255))
 
-        #cam1 = e.create_camera(c, layers=[l2, l], hud=[h_smile])
         cam1 = Camera(awesomeengine.get().renderer,c,[l2, l], hud=[h_smile])
-        #cam2 = e.create_camera(c2, layers=[l3, l])
         cam2 = Camera(awesomeengine.get().renderer, c2, [l3, l], hud=[h_smile])
 
         self.cams = [cam1, cam2]
         self.entities = [box, h_smile, c, c2, m]
 
-        #e.add_update_layer('update')
-
     def leave(self):
         e = awesomeengine.get()
-        #for cam in self.cams:
-         #   e.remove_camera(cam)
+
         for ent in self.entities:
             e.remove_entity(ent)
-
-        #e.remove_update_layer('update')
 
     def handle_event(self, event):
         if awesomeengine.get().entity_manager.has_by_name(event.target):
@@ -56,10 +49,8 @@ class WelcomeMode(awesomeengine.mode.Mode):
 
         c = e.add_entity('welcome_camera')
 
-        # l = awesomeengine.layer.SimpleCroppedLayer('draw')
         l2 = awesomeengine.layer.SolidBackgroundLayer((0, 0, 0, 255))
 
-        #cam = e.create_camera(c, layers=[l2], hud=[h])
         cam = Camera(awesomeengine.get().renderer,c,[l2], [h])
 
         self.entities = [h, c]
@@ -67,8 +58,6 @@ class WelcomeMode(awesomeengine.mode.Mode):
 
     def leave(self):
         e = awesomeengine.get()
-        #for cam in self.cams:
-        #    e.remove_camera(cam)
         for ent in self.entities:
             e.remove_entity(ent)
 

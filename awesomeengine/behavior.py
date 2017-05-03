@@ -1,18 +1,11 @@
 from abc import ABCMeta
 
 
-class Component:
+class Behavior:
     __metaclass__ = ABCMeta
 
     def add(self, entity):
         verify_attrs(entity, self.required_attrs)
-    
-        for event, handler in self.event_handlers:
-            entity.register_handler(event, handler)
-
-    def remove(self, entity):
-        for event, handler in self.event_handlers:
-            entity.unregister_handler(event, handler)
         
         
 def verify_attrs(entity, required_attrs):

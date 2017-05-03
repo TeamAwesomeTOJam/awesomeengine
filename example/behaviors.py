@@ -1,18 +1,16 @@
-from awesomeengine.component import verify_attrs
-from awesomeengine.component import Component
+from awesomeengine.behavior import verify_attrs
+from awesomeengine.behavior import Behavior
 from awesomeengine import engine
 
-class InputRotateComponent(Component):
 
-    def add(self, entity):
-        verify_attrs(entity, ['angle', ('va', 0)])
+class RotateOnInput(Behavior):
 
-        entity.register_handler('update', self.handle_update)
-        entity.register_handler('input', self.handle_input)
-
-    def remove(self, entity):
-        entity.unregister_handler('update', self.handle_update)
-        entity.unregister_handler('input', self.handle_input)
+    def __init__(self):
+        self.required_attrs = ('angle', ('va', 0))
+        self.event_handlers = {
+            'update': self.handle_update, 
+            'input': self.handle_input
+        }
 
     def handle_update(self, entity, dt):
         entity.angle = (entity.angle + entity.va*dt) % 360
@@ -27,15 +25,12 @@ class InputRotateComponent(Component):
         elif (action == 'ccw' or action == 'cw') and value == 0:
             entity.va = 0
 
-class InputVelocityComponent(Component):
 
-    def add(self, entity):
-        verify_attrs(entity, [('vx', 0), ('vy', 0)])
+class ChangeVelocityOnInput(Behavior):
 
-        entity.register_handler('input', self.handle_input)
-
-    def remove(self, entity):
-        entity.unregister_handler('input', self.handle_input)
+    def __init__(self):
+        self.required_attrs = (('vx', 0), ('vy', 0))
+        self.event_handlers = {'input': self.handle_input}
 
     def handle_input(self, entity, action, value):
         if action == 'up' and value == 1:
@@ -51,15 +46,12 @@ class InputVelocityComponent(Component):
         elif (action == 'left' or action == 'right') and value == 0:
             entity.vx = 0
 
-class InputZoomComponent(Component):
 
-    def add(self, entity):
-        verify_attrs(entity, [('width'), 'height'])
+class ZoomOnInput(Behavior):
 
-        entity.register_handler('input', self.handle_input)
-
-    def remove(self, entity):
-        entity.unregister_handler('input', self.handle_input)
+    def __init__(self):
+        self.required_attrs = ('width', 'height')
+        self.event_handlers = {'input': self.handle_input}
 
     def handle_input(self, entity, action, value):
         if action == 'zoom in' and value == 1:
@@ -69,13 +61,12 @@ class InputZoomComponent(Component):
             entity.width *= 1.5
             entity.height *= 1.5
 
-class ManagerComponent(Component):
 
-    def add(self, entity):
-        entity.register_handler('input', self.handle_input)
+class ChangeMode(Behavior):
 
-    def remove(self, entity):
-        entity.unregister_handler('input', self.handle_input)
+    def __init__(self):
+        self.required_attrs = []
+        self.event_handlers = {'input': self.handle_input}
 
     def handle_input(self, entity, action, value):
         if action == 'welcome' and value == 1:
