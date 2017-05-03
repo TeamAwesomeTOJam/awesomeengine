@@ -58,6 +58,7 @@ class WelcomeMode(awesomeengine.mode.Mode):
         
         h = Entity('hello')
         c = Entity('welcome_camera')
+
         e.entity_manager.add(h, c)
         
         l2 = awesomeengine.layer.SolidBackgroundLayer((0, 0, 0, 255))
@@ -65,6 +66,39 @@ class WelcomeMode(awesomeengine.mode.Mode):
         cam = Camera(awesomeengine.get().renderer,c,[l2], [h])
 
         self.entities = [h, c]
+        self.cams = [cam]
+
+    def leave(self):
+        e = awesomeengine.get()
+        for ent in self.entities:
+            e.entity_manager.remove(ent)
+
+    def handle_event(self, event):
+        if awesomeengine.get().entity_manager.has_by_name(event.target):
+            awesomeengine.get().entity_manager.get_by_name(event.target).handle('input', event.action, event.value)
+
+    def update(self, dt):
+        for e in awesomeengine.get().entity_manager.get_by_tag('update'):
+            e.handle('update', dt)
+
+    def draw(self):
+        for c in self.cams:
+            c.render()
+
+class ButtonTestMode(awesomeengine.mode.Mode):
+
+    def enter(self):
+        e = awesomeengine.get()
+        c = Entity('button_cam')
+        button = Entity('button')
+        m = Entity('mouse')
+
+        e.entity_manager.add(button, c, m)
+        l2 = awesomeengine.layer.SolidBackgroundLayer((0, 0, 0, 255))
+        l = awesomeengine.layer.SimpleCroppedLayer('draw')
+        cam = Camera(awesomeengine.get().renderer, c, [l2, l], [])
+
+        self.entities = [button, c, m]
         self.cams = [cam]
 
     def leave(self):

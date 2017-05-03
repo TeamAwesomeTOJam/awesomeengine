@@ -14,6 +14,7 @@ def go():
 
     e.add_mode('main', modes.MainMode())
     e.add_mode('welcome', modes.WelcomeMode())
+    e.add_mode('button', modes.ButtonTestMode())
 
     e.change_mode('welcome')
     

@@ -84,7 +84,7 @@ class DrawStaticText(Behavior):
 class DrawDynamicText(Behavior):
 
     def __init__(self):
-        self.required_attrs = ('colour', 'size', 'text', 'topleft', 'font')
+        self.required_attrs = ('colour', 'size', ('text',''), 'topleft', 'font')
         self.event_handlers = {'draw': self.handle_draw}
 
     def handle_draw(self, entity, camera):
@@ -94,6 +94,20 @@ class DrawDynamicText(Behavior):
             texture = sdl2hl.Texture.from_surface(engine.get().renderer, surface)
             x,y = camera.screen_percent_point(entity.topleft)
             r = rectangle.Rect(x + texture.w/2, y - texture.h/2, texture.w, texture.h)
+            camera.draw_image(r, texture)
+
+class DrawDynamicTextCentered(Behavior):
+
+    def __init__(self):
+        self.required_attrs = ('colour', 'size', ('text',''), 'x', 'y', 'font')
+        self.event_handlers = {'draw': self.handle_draw}
+
+    def handle_draw(self, entity, camera):
+        if len(entity.text) > 0:
+            font = engine.get().resource_manager.get('font', (entity.font, entity.size))
+            surface = font.render_solid(entity.text, entity.colour)
+            texture = sdl2hl.Texture.from_surface(engine.get().renderer, surface)
+            r = rectangle.Rect(entity.x, entity.y, texture.w, texture.h)
             camera.draw_image(r, texture)
 
 class WorldMouseFollower(Behavior):
@@ -113,6 +127,61 @@ class WorldMouseFollower(Behavior):
                     world_point = c.camera.screen_to_world(p)
                     entity.x = world_point[0]
                     entity.y = world_point[1]
+                    entity.handle('move')
                     break
-            #entity.x = value[0][0]
-            #entity.y = value[0][1]
+
+class MouseClicker(Behavior):
+
+    def __init__(self):
+        self.required_attrs = ('x', 'y', ('pressed_list', []))
+        self.event_handlers =  {'input' : self.handle_input,
+                                'move' : self.handle_move}
+
+    def handle_input(self, entity, action, value):
+        if action == 'click':
+            if value == 1:
+                #button down, find what we are clicking on
+                entity.pressed_list = engine.get().entity_manager.get_in_area('clickable', rectangle.Rect(entity.x, entity.y,0,0))
+                for e in entity.pressed_list:
+                    e.handle('pressed')
+            elif value == 0:
+                for e in entity.pressed_list:
+                    e.handle('released')
+                    e.handle('clicked')
+
+    def handle_move(self, entity):
+        if entity.pressed_list:
+            new_pressed_list = engine.get().entity_manager.get_in_area('clickable', rectangle.Rect(entity.x, entity.y,0,0))
+            for e in entity.pressed_list:
+                if e not in new_pressed_list:
+                    e.handle('released')
+            entity.pressed_list = new_pressed_list
+
+class BasicButton(Behavior):
+
+    def __init__(self):
+        self.required_attrs = ('x', 'y', 'width', 'height',
+                              'up_text', 'down_text',
+                              'up_colour', 'down_colour',
+                              ('text', ''),
+                              ('current_colour', (0,0,0)))
+        self.event_handlers = {'draw' : self.handle_draw,
+                               'pressed': self.handle_pressed,
+                               'released': self.handle_released}
+
+    def add(self, entity):
+        super(BasicButton, self).add(entity)
+        entity.text = entity.up_text
+        entity.current_colour = entity.up_colour
+
+    def handle_draw(self, entity, camera):
+        camera.draw_rect(entity.current_colour, rectangle.from_entity(entity))
+
+    def handle_pressed(self, entity):
+        entity.text = entity.down_text
+        entity.current_colour = entity.down_colour
+
+    def handle_released(self, entity):
+        entity.text = entity.up_text
+        entity.current_colour = entity.up_colour
+

@@ -73,3 +73,5 @@ class ChangeMode(Behavior):
             engine.get().change_mode('welcome')
         elif action == 'main' and value == 1:
             engine.get().change_mode('main')
+        elif action == 'button' and value == 1:
+            engine.get().change_mode('button')
