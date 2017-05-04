@@ -141,6 +141,5 @@ def LoadJSONMap(prefix, key):
     
 def SaveJSONMap(prefix, key, data):
     with open(os.path.join(prefix, 'maps', key + '.json'), 'wb') as out_file:
-        return json.dump(data, out_file)    
-
+        return json.dump(data, out_file, default=lambda x : None)
 
