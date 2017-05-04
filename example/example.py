@@ -9,7 +9,6 @@ def go():
     e.create_window(title='Hello World!', size=(1280,480))
 
     manager = awesomeengine.Entity('manager')
-    print manager.__dict__
     e.entity_manager.add(manager)
 
     e.add_mode('main', modes.MainMode())
