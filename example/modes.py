@@ -118,3 +118,4 @@ class ButtonTestMode(awesomeengine.mode.Mode):
     def draw(self):
         for c in self.cams:
             c.render()
+            

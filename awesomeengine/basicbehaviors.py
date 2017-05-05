@@ -346,6 +346,31 @@ class ZoomOnInput(Behavior):
         elif action == 'zoom out' and value == 1:
             entity.width *= 1.5
             entity.height *= 1.5
+        
+class SyncWithEntity(Behavior):
+
+    def __init__(self):
+        self.required_attrs = ('sync_target', 'sync_attributes')
+        self.event_handlers = {'update' : self.handle_update}
+    
+    def handle_update(self, entity, dt):
+        target = engine.get().entity_manager.get_by_name(entity.sync_target)
+        for attribute in entity.sync_attributes:
+            entity.__dict__[attribute] = getattr(target, attribute)
+            
+class Animate(Behavior):
+    
+    def __init__(self):
+        self.required_attrs = []
+        self.event_handlers = {'update': self.handle_update}
+        
+    def add(self, entity):
+        super(Animate, self).add(entity)
+        
+        
+        
+    def handle_update(self, entity, dt):
+        pass
 
 class RadioButton(Behavior):
 
