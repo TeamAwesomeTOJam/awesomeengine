@@ -33,6 +33,7 @@ class Engine(object):
         self.resource_manager.register_loader('image', resourcemanager.LoadImage)
         self.resource_manager.register_loader('sound', resourcemanager.LoadSound)
         self.resource_manager.register_loader('font', resourcemanager.LoadFont)
+        self.resource_manager.register_loader('text', resourcemanager.LoadText)
         self.resource_manager.register_loader('map', resourcemanager.LoadJSONMap)
         self.resource_manager.register_saver('map', resourcemanager.SaveJSONMap)
 

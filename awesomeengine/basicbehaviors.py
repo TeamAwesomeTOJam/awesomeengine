@@ -145,6 +145,8 @@ class HudWorldMouseClicker(Behavior):
 
     def __init__(self):
         self.required_attrs = ('x', 'y',
+                               ('world_x', 0),
+                               ('world_y', 0),
                                ('hud_pressed_list', []),
                                ('world_pressed_list', []))
         self.event_handlers = {'input' : self.handle_input,
@@ -210,6 +212,16 @@ class HudWorldMouseClicker(Behavior):
                         if e not in new_hud_pressed_list:
                             e.handle('released')
                     entity.hud_pressed_list = new_hud_pressed_list
+        #TODO so much code waste here
+        cams = engine.get().entity_manager.get_by_tag('camera')
+        for c in cams:
+            r = rectangle.Rect(c.screen_x + c.screen_width / 2, c.screen_y + c.screen_height / 2, c.screen_width,
+                               c.screen_height)
+            if r.contains((entity.x, entity.y)):
+                world_point = c.camera.screen_to_world((entity.x, entity.y))
+                entity.world_x = world_point[0]
+                entity.world_y = world_point[1]
+
 
 
 
@@ -248,7 +260,8 @@ class BasicButton(Behavior):
                               'up_text', 'down_text',
                               'up_colour', 'down_colour',
                               ('text', ''),
-                              ('current_colour', (0,0,0)))
+                              ('current_colour', (0,0,0)),
+                               ('pressed', False))
         self.event_handlers = {'draw' : self.handle_draw,
                                'pressed': self.handle_pressed,
                                'released': self.handle_released}
@@ -264,8 +277,116 @@ class BasicButton(Behavior):
     def handle_pressed(self, entity):
         entity.text = entity.down_text
         entity.current_colour = entity.down_colour
+        entity.pressed = True
 
     def handle_released(self, entity):
         entity.text = entity.up_text
         entity.current_colour = entity.up_colour
+        entity.pressed = False
 
+
+class RotateOnInput(Behavior):
+
+    def __init__(self):
+        self.required_attrs = ('angle', ('va', 0))
+        self.event_handlers = {
+            'update': self.handle_update,
+            'input': self.handle_input
+        }
+
+    def handle_update(self, entity, dt):
+        entity.angle = (entity.angle + entity.va*dt) % 360
+
+        engine.get().entity_manager.update_position(entity)
+
+    def handle_input(self, entity, action, value):
+        if action == 'ccw' and value == 1:
+            entity.va = 10
+        elif action == 'cw' and value == 1:
+            entity.va = -10
+        elif (action == 'ccw' or action == 'cw') and value == 0:
+            entity.va = 0
+
+
+class ChangeVelocityOnInput(Behavior):
+
+    def __init__(self):
+        self.required_attrs = (('vx', 0), ('vy', 0))
+        self.event_handlers = {'input': self.handle_input}
+
+    def handle_input(self, entity, action, value):
+        if action == 'up' and value == 1:
+            entity.vy = 100
+        elif action == 'down' and value == 1:
+            entity.vy = -100
+        elif (action == 'up' or action == 'down') and value == 0:
+            entity.vy = 0
+        if action == 'left' and value == 1:
+            entity.vx = -100
+        elif action == 'right' and value == 1:
+            entity.vx = 100
+        elif (action == 'left' or action == 'right') and value == 0:
+            entity.vx = 0
+
+
+class ZoomOnInput(Behavior):
+
+    def __init__(self):
+        self.required_attrs = ('width', 'height')
+        self.event_handlers = {'input': self.handle_input}
+
+    def handle_input(self, entity, action, value):
+        if action == 'zoom in' and value == 1:
+            entity.width /= 1.5
+            entity.height /= 1.5
+        elif action == 'zoom out' and value == 1:
+            entity.width *= 1.5
+            entity.height *= 1.5
+
+class RadioButton(Behavior):
+
+    def __init__(self):
+        self.required_attrs = ('x', 'y', 'width', 'height',
+                               'up_text', 'down_text',
+                               'up_colour', 'down_colour',
+                               ('text', ''),
+                               ('current_colour', (0, 0, 0)),
+                               'radio_group',
+                               ('selected', False))
+        self.event_handlers = {'draw': self.handle_draw,
+                               'clicked': self.handle_clicked,
+                               'un_selected': self.unselect}
+
+    def add(self, entity):
+        super(RadioButton, self).add(entity)
+        if entity.selected:
+            entity.text = entity.down_text
+            entity.current_colour = entity.down_colour
+        else:
+            entity.text = entity.up_text
+            entity.current_colour = entity.up_colour
+
+    def handle_draw(self, entity, camera):
+        camera.draw_rect(entity.current_colour, rectangle.from_entity(entity))
+
+    #def handle_pressed(self, entity):
+    #    entity.text = entity.down_text
+    #    entity.current_colour = entity.down_colour
+
+    def unselect(self, entity):
+        entity.text = entity.up_text
+        entity.current_colour = entity.up_colour
+        entity.selected = False
+
+    def handle_clicked(self, entity):
+        eng = engine.get()
+        #find other radio buttons
+        all = eng.entity_manager.get_by_tag('radio_button')
+        group = []
+        for e in all:
+            if e.radio_group == entity.radio_group and not e == entity:
+                e.handle('un_selected')
+
+        entity.text = entity.down_text
+        entity.current_colour = entity.down_colour
+        entity.selected = True
