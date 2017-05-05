@@ -30,6 +30,7 @@ class Engine(object):
         self.resource_manager = resourcemanager.ResourceManager(res_prefix)
         self.resource_manager.register_loader('entity', resourcemanager.LoadEntityData)
         self.resource_manager.register_loader('inputmap', resourcemanager.LoadInputMapping)
+        self.resource_manager.register_loader('animation', resourcemanager.LoadAnimation)
         self.resource_manager.register_loader('image', resourcemanager.LoadImage)
         self.resource_manager.register_loader('sound', resourcemanager.LoadSound)
         self.resource_manager.register_loader('font', resourcemanager.LoadFont)

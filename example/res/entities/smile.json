@@ -6,6 +6,7 @@
   "angle" : 0,
   "image": "Smiley.png",
   "name" : "smile",
-  "behaviors" : ["DrawHitBox", "DrawScaledImage", "RotateOnInput", "ChangeVelocityOnInput", "MoveUsingVelocity"],
+  "default_animation" : "test",
+  "behaviors" : ["Animate", "DrawHitBox", "DrawScaledImage", "RotateOnInput", "ChangeVelocityOnInput", "MoveUsingVelocity"],
   "tags" : ["draw","update"]
 }

@@ -80,13 +80,6 @@ def LoadAnimation(prefix, key):
     with open(os.path.join(prefix, 'animations', key + '.json')) as in_file:
         animation = json.load(in_file)
 
-    if 'frame_dir' in animation:
-        frame_dir = os.path.join(prefix, 'images', animation['frame_dir'])
-        frames = sorted(os.listdir(frame_dir))
-        animation['frames'] = []
-        for frame in frames:
-            animation['frames'].append(os.path.join(frame_dir, frame))
-
     return freezejson.freeze_value(animation)
                     
 def LoadSound(prefix, key):

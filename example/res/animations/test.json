@@ -1,0 +1,20 @@
+{
+    "frames": [
+        {
+            "duration": 2,
+            "attributes": {
+                "x": 5,
+                "y": 6
+            },
+            "events" : []
+        }, {
+            "duration": 2,
+            "attributes": {
+                "x": 25,
+                "y": 26
+            },
+            "events" : []
+        }
+            
+    ]
+}

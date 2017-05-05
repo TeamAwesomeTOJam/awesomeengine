@@ -361,16 +361,43 @@ class SyncWithEntity(Behavior):
 class Animate(Behavior):
     
     def __init__(self):
-        self.required_attrs = []
-        self.event_handlers = {'update': self.handle_update}
-        
+        self.required_attrs = ('default_animation',)
+        self.event_handlers = {'update': self.handle_update, 'play_animation': self.handle_play_animation}
+
     def add(self, entity):
         super(Animate, self).add(entity)
-        
-        
-        
+        self.handle_play_animation(entity, entity.default_animation, reset=True, loop=True)
+
     def handle_update(self, entity, dt):
-        pass
+        animation = engine.get().resource_manager.get('animation', entity.animation_name)
+        frame = animation.frames[entity.current_frame]
+        
+        entity.current_frame_time += dt
+        
+        if entity.current_frame_time > frame.duration:
+            entity.current_frame_time -= frame.duration
+            
+            if entity.current_frame == len(animation.frames) - 1: # already on the last frame
+                if not entity.loop_animation:
+                    entity.animation_name = entity.default_animation
+                entity.current_frame = 0
+            else:
+                entity.current_frame += 1
+            
+            new_frame = animation.frames[entity.current_frame]
+            for name in new_frame.attributes._fields:
+                value = getattr(new_frame.attributes, name)
+                entity.__dict__[name] = value
+                
+            for event in new_frame.events:
+                entity.handle(event[0], *event[1:])
+        
+    def handle_play_animation(self, entity, animation_name, reset=False, loop=False):
+        if reset or entity.animation_name != animation_name:
+            entity.animation_name = animation_name
+            entity.current_frame = 0
+            entity.current_frame_time = 0
+            entity.loop_animation = loop
 
 class RadioButton(Behavior):
 
