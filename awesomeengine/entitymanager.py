@@ -26,9 +26,12 @@ class EntityManager(object):
             e = entity.Entity(static_data_name, **kwargs)
             self.add_entity(e)
     
-    def save_to_map(self, map_name):
+    def save_to_map(self, map_name, filter=None):
         entity_info = []
         for entity in self.entities:
+            if filter is not None and not filter(entity):
+                continue
+        
             static_data_name = entity._static_data_name
             kwargs = entity.__dict__.copy()
             del kwargs['_static_data_name']
