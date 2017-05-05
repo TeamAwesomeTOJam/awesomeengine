@@ -163,6 +163,8 @@ class HudWorldMouseClicker(Behavior):
                         #we found our camera, first check hud
                         hud_point = c.camera.screen_to_hud((entity.x, entity.y))
                         for e in c.camera.hud_entities:
+                            if 'clickable' not in e.tags:
+                                break
                             hud_ent_rect = rectangle.from_entity(e)
                             if hud_ent_rect.contains(hud_point):
                                 entity.hud_pressed_list.append(e)
@@ -205,6 +207,8 @@ class HudWorldMouseClicker(Behavior):
                     hud_point = c.camera.screen_to_hud((entity.x, entity.y))
                     new_hud_pressed_list = []
                     for e in c.camera.hud_entities:
+                        if 'clickable' not in e.tags:
+                            break
                         hud_ent_rect = rectangle.from_entity(e)
                         if hud_ent_rect.contains(hud_point):
                             new_hud_pressed_list.append(e)
