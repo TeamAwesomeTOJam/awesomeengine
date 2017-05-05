@@ -44,7 +44,7 @@ class EntityManager(object):
         self._remove_list += self.entities
     
     def commit_changes(self):
-        for entity in self.__remove_list:
+        for entity in self._remove_list:
             for tag in getattr(entity, 'tags', []):
                 self._entities_by_tag[tag].remove(entity)
                 try:
