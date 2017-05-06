@@ -24,6 +24,29 @@ class DrawScaledImage(Behavior):
 
     def handle_draw(self, entity, camera):
         camera.draw_image(rectangle.from_entity(entity), engine.get().resource_manager.get('image', entity.image))
+        
+        
+class DrawScaledSprite(Behavior):
+
+    def __init__(self):
+        self.required_attrs = ('x', 'y', 'width', 'height', 'sprite_name', 'sprite_index', ('angle', 0))
+        self.event_handlers = {'draw': self.handle_draw}
+
+    def handle_draw(self, entity, camera):
+        e = engine.get()
+        sprite = e.resource_manager.get('sprite', entity.sprite_name)
+        camera.draw_image_part(
+            rectangle.from_entity(entity),
+            engine.get().resource_manager.get('image', sprite.sheet),
+            self._get_rect_for_sprite_index(sprite, entity.sprite_index))
+        
+    def _get_rect_for_sprite_index(self, sprite, index):
+        sheet_tex = engine.get().resource_manager.get('image', sprite.sheet)
+        sheet_width = sheet_tex.w
+        x = (sprite.width * index) % sheet_width
+        y = ((sprite.width * index) / sheet_width) * sprite.height
+        print y
+        return sdl2hl.Rect(x, y, sprite.width, sprite.height)
 
 
 class MoveUsingVelocity(Behavior):

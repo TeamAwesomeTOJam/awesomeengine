@@ -162,6 +162,11 @@ class Camera(object):
         w,h = self.transform_width(r.w), self.transform_height(r.h)
         self.renderer.copy(texture, dest_rect=sdl2hl.Rect(int(x - w/2), int(y - h/2), w,h), rotation=self.transform_angle(r.a))
 
+    def draw_image_part(self, r, texture, source_rect):
+        x,y = self.transform_point(r.center)
+        w,h = self.transform_width(r.w), self.transform_height(r.h)
+        self.renderer.copy(texture, source_rect=source_rect, dest_rect=sdl2hl.Rect(int(x - w/2), int(y - h/2), w,h), rotation=self.transform_angle(r.a))
+
     def clear(self, colour):
         self.renderer.draw_color = colour
         self.renderer.clear()
