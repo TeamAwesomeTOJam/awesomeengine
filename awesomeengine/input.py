@@ -12,13 +12,17 @@ InputEvent = namedtuple('InputEvent', ['target', 'action', 'value'])
 
 class InputManager:
 
-    def __init__(self):
+    def __init__(self, inputmap = 'default'):
         self._input_map = None
         
         self._controllers = [sdl2hl.GameController(i) for i in range(sdl2hl.GameController.get_count())]
-            
+
+        self._input_map = engine.get().resource_manager.get('inputmap', inputmap)
+
+    def set_input_map(self, inputmap):
+        self._input_map = engine.get().resource_manager.get('inputmap', inputmap)
+
     def process_events(self):
-        self._input_map = engine.get().resource_manager.get('inputmap', 'default')
         processed_events = []
 
         for e in sdl2hl.events.poll():
