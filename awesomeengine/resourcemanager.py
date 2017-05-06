@@ -139,4 +139,8 @@ def LoadJSONMap(prefix, key):
 def SaveJSONMap(prefix, key, data):
     with open(os.path.join(prefix, 'maps', key + '.json'), 'wb') as out_file:
         json.dump(data, out_file, default=lambda x : None)
+        
+def LoadSprite(prefix, key):
+    with open(os.path.join(prefix, 'sprites', key + '.json')) as in_file:
+        return freezejson.freeze_value(json.load(in_file))
 
