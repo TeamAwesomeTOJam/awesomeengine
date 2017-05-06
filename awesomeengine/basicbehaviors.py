@@ -315,20 +315,20 @@ class RotateOnInput(Behavior):
 class ChangeVelocityOnInput(Behavior):
 
     def __init__(self):
-        self.required_attrs = (('vx', 0), ('vy', 0))
+        self.required_attrs = (('vx', 0), ('vy', 0), ('speed', 100))
         self.event_handlers = {'input': self.handle_input}
 
     def handle_input(self, entity, action, value):
         if action == 'up' and value == 1:
-            entity.vy = 100
+            entity.vy = entity.speed
         elif action == 'down' and value == 1:
-            entity.vy = -100
+            entity.vy = -entity.speed
         elif (action == 'up' or action == 'down') and value == 0:
             entity.vy = 0
         if action == 'left' and value == 1:
-            entity.vx = -100
+            entity.vx = -entity.speed
         elif action == 'right' and value == 1:
-            entity.vx = 100
+            entity.vx = entity.speed
         elif (action == 'left' or action == 'right') and value == 0:
             entity.vx = 0
 
