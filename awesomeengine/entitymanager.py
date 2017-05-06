@@ -77,6 +77,10 @@ class EntityManager(object):
     def update_position(self, entity):
         for tag in entity.tags:
             self._spatial_maps[tag].update(entity)
+
+    def update_all_positions(self):
+        for e in self.entities:
+            self.update_position(e)
         
     def get_by_name(self, name):
         return self._entities_by_name[name]

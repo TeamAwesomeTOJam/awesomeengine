@@ -38,19 +38,22 @@ class SpatialMap(object):
             pass
                 
     def update(self, entity):
-        old_squares = self.reverse_map[entity]
-        new_squares = self._get_grid_squares(rectangle.from_entity(entity))
-        
-        for square in old_squares - new_squares:
-            self.map[square].discard(entity)
-                
-        for square in new_squares - old_squares:
-            if not square in self.map:
-                self.map[square] = weakref.WeakSet()
-                
-            self.map[square].add(entity)
-                
-        self.reverse_map[entity] = new_squares  
+        try:
+            old_squares = self.reverse_map[entity]
+            new_squares = self._get_grid_squares(rectangle.from_entity(entity))
+
+            for square in old_squares - new_squares:
+                self.map[square].discard(entity)
+
+            for square in new_squares - old_squares:
+                if not square in self.map:
+                    self.map[square] = weakref.WeakSet()
+
+                self.map[square].add(entity)
+
+            self.reverse_map[entity] = new_squares
+        except KeyError:
+            pass
     
     def get(self, rect, precise=True):
         possible_intersections = set()
