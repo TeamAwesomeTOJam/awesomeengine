@@ -31,6 +31,10 @@ class ResourceManager(object):
     
     def save(self, res_type, key, data):
         self.savers[res_type](self.prefix, key, data)
+        try:
+            del self.cache[(res_type, key)]
+        except:
+            pass
     
     def clear(self):
         self.cache = {}
@@ -134,5 +138,5 @@ def LoadJSONMap(prefix, key):
     
 def SaveJSONMap(prefix, key, data):
     with open(os.path.join(prefix, 'maps', key + '.json'), 'wb') as out_file:
-        return json.dump(data, out_file, default=lambda x : None)
+        json.dump(data, out_file, default=lambda x : None)
 

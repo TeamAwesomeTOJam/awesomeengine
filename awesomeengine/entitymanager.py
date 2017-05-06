@@ -1,6 +1,7 @@
 import weakref
 
 import engine
+import entity
 import spatialmap
 
 
@@ -24,7 +25,7 @@ class EntityManager(object):
         entity_info = engine.get().resource_manager.get('map', map_name)
         for static_data_name, kwargs in entity_info:
             e = entity.Entity(static_data_name, **kwargs)
-            self.add_entity(e)
+            self.add(e)
     
     def save_to_map(self, map_name, filter=None):
         entity_info = []
