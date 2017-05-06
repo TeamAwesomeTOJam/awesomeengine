@@ -54,7 +54,7 @@ class Engine(object):
         self.show_telemetry = False
         self.telemetry_font = self.resource_manager.get('font', ('LiberationSans-Regular', 24))
 
-        self.fps_queue = collections.deque(maxlen=30)
+        self.fps_queue = collections.deque(maxlen=10)
 
     def create_window(self, size=None, pos=None, title='awesome', *flags):
         if size is None:
@@ -109,15 +109,16 @@ class Engine(object):
 
         if self.show_telemetry:
             mean_fps = sum(self.fps_queue) / len(self.fps_queue)
-            surf = self.telemetry_font.render_solid('%s' % mean_fps, (255, 255, 0))
-
+            surface = self.telemetry_font.render_solid('%.0f' % mean_fps, (255, 255, 0))
+            texture = sdl2hl.Texture.from_surface(self.renderer, surface)
+            self.renderer.copy(texture, dest_rect=sdl2hl.Rect(0, 0, surface.w, surface.h))
+            
         self.renderer.present()
 
     def quit(self):
         self.running = False
 
     def change_mode(self, new_mode):
-        print new_mode
         if self.current_mode is not None:
             self.modes[self.current_mode].leave()
             self.entity_manager.commit_changes()
