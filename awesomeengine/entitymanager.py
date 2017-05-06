@@ -15,11 +15,14 @@ class EntityManager(object):
         self._entities_by_name = weakref.WeakValueDictionary()
         self._entities_by_tag = {}
         self._spatial_maps = {}
-        self._remove_list = []
-        self._add_list = []
+        self._remove_set = set()
+        self._add_set = set()
     
     def add(self, *args):
-        self._add_list += args
+        for entity in args:
+            if entity.name in self._entities_by_name:
+                raise KeyError('Entity with name %s already exists.' % entity.name)
+        self._add_set |= set(args)
 
     def add_from_map(self, map_name):
         entity_info = engine.get().resource_manager.get('map', map_name)
@@ -42,13 +45,13 @@ class EntityManager(object):
         engine.get().resource_manager.save('map', map_name, entity_info)
     
     def remove(self, *args):     
-        self._remove_list += args
+        self._remove_set |= set(args)
     
     def clear(self):
-        self._remove_list += self.entities
+        self._remove_set |= self.entities
     
     def commit_changes(self):
-        for entity in self._remove_list:
+        for entity in self._remove_set:
             for tag in getattr(entity, 'tags', []):
                 self._entities_by_tag[tag].remove(entity)
                 try:
@@ -58,7 +61,7 @@ class EntityManager(object):
             del self._entities_by_name[entity.name]
             self.entities.remove(entity)
             
-        for entity in self._add_list:
+        for entity in self._add_set:
             self.entities.add(entity)
             self._entities_by_name[entity.name] = entity
 
@@ -71,8 +74,8 @@ class EntityManager(object):
                     self._spatial_maps[tag] = spatialmap.SpatialMap(GRID_SIZE)
                 self._spatial_maps[tag].add(entity)
         
-        self._add_list = []
-        self._remove_list = []
+        self._add_set.clear()
+        self._remove_set.clear()
     
     def update_position(self, entity):
         for tag in entity.tags:

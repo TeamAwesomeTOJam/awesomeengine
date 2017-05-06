@@ -120,6 +120,7 @@ class Engine(object):
         print new_mode
         if self.current_mode is not None:
             self.modes[self.current_mode].leave()
+            self.entity_manager.commit_changes()
 
         self.current_mode = new_mode
         self.modes[self.current_mode].enter()
