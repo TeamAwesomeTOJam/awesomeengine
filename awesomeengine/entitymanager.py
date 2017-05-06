@@ -21,7 +21,13 @@ class EntityManager(object):
     def add(self, *args):
         for entity in args:
             if entity.name in self._entities_by_name:
-                raise KeyError('Entity with name %s already exists.' % entity.name)
+                found = False
+                for e in self._remove_set:
+                    if e.name == entity.name:
+                        found = True
+                        break
+                if not found:
+                    raise KeyError('Entity with name %s already exists.' % entity.name)
         self._add_set |= set(args)
 
     def add_from_map(self, map_name):
