@@ -35,10 +35,14 @@ class DrawScaledSprite(Behavior):
     def handle_draw(self, entity, camera):
         e = engine.get()
         sprite = e.resource_manager.get('sprite', entity.sprite_name)
+        
+        flip = 1 if hasattr(entity, 'flip') and entity.flip else 0
+        
         camera.draw_image_part(
             rectangle.from_entity(entity),
             engine.get().resource_manager.get('image', sprite.sheet),
-            self._get_rect_for_sprite_index(sprite, entity.sprite_index))
+            self._get_rect_for_sprite_index(sprite, entity.sprite_index),
+            flip)
         
     def _get_rect_for_sprite_index(self, sprite, index):
         sheet_tex = engine.get().resource_manager.get('image', sprite.sheet)
