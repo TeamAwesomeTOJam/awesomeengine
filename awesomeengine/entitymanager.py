@@ -14,7 +14,7 @@ class EntityManager(object):
         self.entities = set()
         self._entities_by_name = weakref.WeakValueDictionary()
         self._entities_by_tag = {}
-        self._spatial_maps = {None: spatialmap.SpatialMap(GRID_SIZE)}
+        self._spatial_maps = {}
         self._remove_list = []
         self._add_list = []
     
@@ -55,15 +55,13 @@ class EntityManager(object):
                     self._spatial_maps[tag].remove(entity)
                 except KeyError:
                     pass
-            self._spatial_maps[None].remove(entity)
             del self._entities_by_name[entity.name]
             self.entities.remove(entity)
             
         for entity in self._add_list:
             self.entities.add(entity)
             self._entities_by_name[entity.name] = entity
-            self._spatial_maps[None].add(entity)
-            
+
             for tag in getattr(entity, 'tags', []):
                 if not tag in self._entities_by_tag:
                     self._entities_by_tag[tag] = weakref.WeakSet()
@@ -77,7 +75,6 @@ class EntityManager(object):
         self._remove_list = []
     
     def update_position(self, entity):
-        self._spatial_maps[None].update(entity)
         for tag in entity.tags:
             self._spatial_maps[tag].update(entity)
         
