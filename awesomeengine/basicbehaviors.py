@@ -45,7 +45,6 @@ class DrawScaledSprite(Behavior):
         sheet_width = sheet_tex.w
         x = (sprite.width * index) % sheet_width
         y = ((sprite.width * index) / sheet_width) * sprite.height
-        print y
         return sdl2hl.Rect(x, y, sprite.width, sprite.height)
 
 
