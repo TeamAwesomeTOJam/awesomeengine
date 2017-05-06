@@ -12,15 +12,12 @@ InputEvent = namedtuple('InputEvent', ['target', 'action', 'value'])
 
 class InputManager:
 
-    def __init__(self, inputmap = 'default'):
-        self._input_map = None
-        
+    def __init__(self, input_map = 'default'):
+        self._input_map = input_map  
         self._controllers = [sdl2hl.GameController(i) for i in range(sdl2hl.GameController.get_count())]
 
-        self._input_map = engine.get().resource_manager.get('inputmap', inputmap)
-
-    def set_input_map(self, inputmap):
-        self._input_map = engine.get().resource_manager.get('inputmap', inputmap)
+    def set_input_map(self, input_map):
+        self._input_map = input_map
 
     def process_events(self):
         processed_events = []
@@ -69,10 +66,12 @@ class InputManager:
         return processed_events
     
     def _new_event(self, device_id, control_id, value):
+        input_map = engine.get().resource_manager.get('inputmap', self._input_map)
+        
         if device_id is None:
-            target_and_action = self._input_map.get('%s' % (control_id,))
+            target_and_action = input_map.get('%s' % (control_id,))
         else:
-            target_and_action = self._input_map.get('%s %s' % (device_id, control_id))
+            target_and_action = input_map.get('%s %s' % (device_id, control_id))
         
         if target_and_action == None:
             return None

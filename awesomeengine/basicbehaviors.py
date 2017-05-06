@@ -292,7 +292,7 @@ class BasicButton(Behavior):
 class RotateOnInput(Behavior):
 
     def __init__(self):
-        self.required_attrs = ('angle', ('va', 0))
+        self.required_attrs = ('angle', ('va', 0), ('angular_speed', 10))
         self.event_handlers = {
             'update': self.handle_update,
             'input': self.handle_input
@@ -305,9 +305,9 @@ class RotateOnInput(Behavior):
 
     def handle_input(self, entity, action, value):
         if action == 'ccw' and value == 1:
-            entity.va = 10
+            entity.va = entity.angular_speed
         elif action == 'cw' and value == 1:
-            entity.va = -10
+            entity.va = -entity.angular_speed
         elif (action == 'ccw' or action == 'cw') and value == 0:
             entity.va = 0
 
@@ -336,16 +336,16 @@ class ChangeVelocityOnInput(Behavior):
 class ZoomOnInput(Behavior):
 
     def __init__(self):
-        self.required_attrs = ('width', 'height')
+        self.required_attrs = ('width', 'height', ('zoom_speed', 1.5))
         self.event_handlers = {'input': self.handle_input}
 
     def handle_input(self, entity, action, value):
         if action == 'zoom in' and value == 1:
-            entity.width /= 1.5
-            entity.height /= 1.5
+            entity.width /= entity.zoom_speed
+            entity.height /= entity.zoom_speed
         elif action == 'zoom out' and value == 1:
-            entity.width *= 1.5
-            entity.height *= 1.5
+            entity.width *= entity.zoom_speed
+            entity.height *= entity.zoom_speed
         
 class SyncWithEntity(Behavior):
 
