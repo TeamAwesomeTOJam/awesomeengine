@@ -39,11 +39,11 @@ class InputManager:
                 if event != None:
                     processed_events.append(event)
 
-            elif e.type == sdl2hl.EventType.keydown:
+            elif e.type == sdl2hl.EventType.keydown and not e.repeat:
                 event = self._new_event(None, e.keycode, 1)
                 if event != None:
                     processed_events.append(event)
-            elif e.type == sdl2hl.EventType.keyup:
+            elif e.type == sdl2hl.EventType.keyup and not e.repeat:
                 event = self._new_event(None, e.keycode, 0)
                 if event != None:
                     processed_events.append(event)
