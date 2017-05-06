@@ -399,6 +399,17 @@ class Animate(Behavior):
             entity.current_frame_time = 0
             entity.loop_animation = loop
 
+class TimeToLive(Behavior):
+
+    def __init__(self):
+        self.required_attrs = ('time_to_live',)
+        self.event_handlers = {'update': self.handle_update}
+
+    def handle_update(self, entity, dt):
+        entity.time_to_live -= dt
+        if entity.time_to_live <= 0:
+            engine.get().entity_manager.remove(entity)
+
 class RadioButton(Behavior):
 
     def __init__(self):
