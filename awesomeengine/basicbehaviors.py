@@ -33,6 +33,8 @@ class DrawSprite(Behavior):
         self.event_handlers = {'draw': self.handle_draw}
 
     def handle_draw(self, entity, camera):
+        print 'sprite', entity.sprite_name, entity.sprite_index
+        
         e = engine.get()
         sprite = e.resource_manager.get('sprite', entity.sprite_name)
         sprite_rect = self._get_rect_for_sprite_index(sprite, entity.sprite_index)
@@ -393,7 +395,7 @@ class Animate(Behavior):
 
     def add(self, entity):
         super(Animate, self).add(entity)
-        self.handle_play_animation(entity, entity.default_animation, reset=True, loop=True)
+        self.handle_play_animation(entity, entity.default_animation)
 
     def handle_update(self, entity, dt):
         apply_frame = False
@@ -411,14 +413,14 @@ class Animate(Behavior):
             
             if entity.current_frame == len(animation.frames) - 1: # already on the last frame
                 if not entity.loop_animation:
-                    entity.animation_name = entity.default_animation
-                    entity.loop_animation = True
-                entity.current_frame = 0
+                    self.handle_play_animation(entity, entity.default_animation)
             else:
                 entity.current_frame += 1
                 
         if apply_frame:
-            new_frame = animation.frames[entity.current_frame]
+            print 'animation', entity.animation_name, entity.current_frame
+            new_animation = engine.get().resource_manager.get('animation', entity.animation_name)
+            new_frame = new_animation.frames[entity.current_frame]
             for name in new_frame.attributes._fields:
                 value = getattr(new_frame.attributes, name)
                 entity.__dict__[name] = value
