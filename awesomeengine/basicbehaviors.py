@@ -26,20 +26,21 @@ class DrawScaledImage(Behavior):
         camera.draw_image(rectangle.from_entity(entity), engine.get().resource_manager.get('image', entity.image))
         
         
-class DrawScaledSprite(Behavior):
+class DrawSprite(Behavior):
 
     def __init__(self):
-        self.required_attrs = ('x', 'y', 'width', 'height', 'sprite_name', 'sprite_index', ('angle', 0))
+        self.required_attrs = ('x', 'y', 'sprite_name', 'sprite_index', ('angle', 0), ('sprite_scale', 1))
         self.event_handlers = {'draw': self.handle_draw}
 
     def handle_draw(self, entity, camera):
         e = engine.get()
         sprite = e.resource_manager.get('sprite', entity.sprite_name)
+        sprite_rect = self._get_rect_for_sprite_index(sprite, entity.sprite_index)
         
         flip = 1 if hasattr(entity, 'flip') and entity.flip else 0
         
         camera.draw_image_part(
-            rectangle.from_entity(entity),
+            rectangle.Rect(entity.x, entity.y, sprite_rect.w * entity.sprite_scale, sprite_rect.h * entity.sprite_scale),
             engine.get().resource_manager.get('image', sprite.sheet),
             self._get_rect_for_sprite_index(sprite, entity.sprite_index),
             flip)
@@ -395,21 +396,28 @@ class Animate(Behavior):
         self.handle_play_animation(entity, entity.default_animation, reset=True, loop=True)
 
     def handle_update(self, entity, dt):
+        apply_frame = False
+        if entity.current_frame_time == 0:
+            apply_frame = True
+        
         animation = engine.get().resource_manager.get('animation', entity.animation_name)
         frame = animation.frames[entity.current_frame]
         
         entity.current_frame_time += dt
         
         if entity.current_frame_time > frame.duration:
+            apply_frame = True
             entity.current_frame_time -= frame.duration
             
             if entity.current_frame == len(animation.frames) - 1: # already on the last frame
                 if not entity.loop_animation:
                     entity.animation_name = entity.default_animation
+                    entity.loop_animation = True
                 entity.current_frame = 0
             else:
                 entity.current_frame += 1
-            
+                
+        if apply_frame:
             new_frame = animation.frames[entity.current_frame]
             for name in new_frame.attributes._fields:
                 value = getattr(new_frame.attributes, name)
