@@ -33,8 +33,6 @@ class DrawSprite(Behavior):
         self.event_handlers = {'draw': self.handle_draw}
 
     def handle_draw(self, entity, camera):
-        print 'sprite', entity.sprite_name, entity.sprite_index
-        
         e = engine.get()
         sprite = e.resource_manager.get('sprite', entity.sprite_name)
         sprite_rect = self._get_rect_for_sprite_index(sprite, entity.sprite_index)
@@ -418,7 +416,6 @@ class Animate(Behavior):
                 entity.current_frame += 1
                 
         if apply_frame:
-            print 'animation', entity.animation_name, entity.current_frame
             new_animation = engine.get().resource_manager.get('animation', entity.animation_name)
             new_frame = new_animation.frames[entity.current_frame]
             for name in new_frame.attributes._fields:
