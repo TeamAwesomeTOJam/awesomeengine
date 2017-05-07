@@ -411,7 +411,7 @@ class Animate(Behavior):
             
             if entity.current_frame == len(animation.frames) - 1: # already on the last frame
                 if not entity.loop_animation:
-                    self.handle_play_animation(entity, entity.default_animation)
+                    self.handle_play_animation(entity, entity.default_animation, True)
             else:
                 entity.current_frame += 1
                 
@@ -490,3 +490,15 @@ class RadioButton(Behavior):
         entity.text = entity.down_text
         entity.current_colour = entity.down_colour
         entity.selected = True
+        
+        
+class PlaySound(Behavior):
+
+    def __init__(self):
+        self.required_attrs = []
+        self.event_handlers = {'play_sound': self.handle_play_sound}
+        
+    def handle_play_sound(self, entity, sound_name):
+        sound = engine.get().resource_manager.get('sound', sound_name)
+        sound.play()
+
