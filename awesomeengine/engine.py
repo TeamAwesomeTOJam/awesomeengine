@@ -76,11 +76,12 @@ class Engine(object):
 
         while self.running:
             dt = timer.tick(60)
-            self.fps_queue.append(1.0/dt)
-            self.handle_events()
-            self.update(dt)
-            self.entity_manager.commit_changes()
-            self.draw()
+            if dt < 0.1:
+                self.fps_queue.append(1.0/dt)
+                self.handle_events()
+                self.update(dt)
+                self.entity_manager.commit_changes()
+                self.draw()
 
         sdl2hl.quit()
 
