@@ -429,7 +429,7 @@ class Animate(Behavior):
                 entity.handle(event[0], *event[1:])
         
     def handle_play_animation(self, entity, animation_name, reset=False, loop=False):
-        if reset or entity.animation_name != animation_name:
+        if reset or getattr(entity, 'animation_name', None) != animation_name:
             entity.animation_name = animation_name
             entity.current_frame = 0
             entity.current_frame_time = 0
