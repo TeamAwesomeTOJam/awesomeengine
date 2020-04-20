@@ -1,7 +1,0 @@
-{
-  "x": 0,
-  "y": 0,
-  "name" : "mouse",
-  "behaviors" : ["ScreenMouseFollower", "HudWorldMouseClicker"],
-  "tags" : ["draw","update"]
-}

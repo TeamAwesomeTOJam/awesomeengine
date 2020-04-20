@@ -1,0 +1,14 @@
+{
+  "pos": {"x":  105, "y":  55},
+  "size": {"x":  200, "y":  100},
+  "world": "hud",
+  "font": "LiberationSans-Regular",
+  "font_size": 50,
+  "up_text": "Up",
+  "down_text": "Down",
+  "colour": [255, 255, 255, 255],
+  "up_colour": [0, 255, 255, 255],
+  "down_colour": [255, 0, 255, 255],
+  "behaviors" : ["DrawDynamicTextCentered", "BasicButton"],
+  "tags" : []
+}

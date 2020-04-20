@@ -1,0 +1,9 @@
+{
+  "pos": {"x":  640, "y":  240},
+  "font": "LiberationSans-Regular",
+  "font_size": 50,
+  "text": "Hello World!",
+  "colour": [255, 255, 255, 255],
+  "behaviors" : ["DrawStaticText"],
+  "tags" : ["draw"]
+}

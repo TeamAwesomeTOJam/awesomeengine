@@ -1,0 +1,460 @@
+from awesomeengine import engine, geometry
+from awesomeengine.behavior import Behavior
+from awesomeengine.geometry import Rect, Vec
+
+
+class DrawHitBox(Behavior):
+
+    def __init__(self):
+        self.required_attrs = ('pos', 'size', ('colour', (255,0,255,255)))
+
+    def handle_draw(self, entity, camera):
+        camera.draw_rect(entity.colour, Rect.from_entity(entity))
+        camera.draw_rect(entity.colour, Rect.from_entity(entity).bounding_rect())
+
+
+class DrawScaledImage(Behavior):
+
+    def __init__(self):
+        self.required_attrs = ('pos', 'size', 'image', ('angle', 0))
+
+    def handle_draw(self, entity, view):
+        view.draw_image(Rect.from_entity(entity), engine.get().resource_manager.get('image', entity.image))
+        
+        
+class DrawSprite(Behavior):
+
+    def __init__(self):
+        self.required_attrs = ('pos', 'sprite_name', 'sprite_index', ('angle', 0), ('sprite_scale', 1))
+
+    def handle_draw(self, entity, view):
+        e = engine.get()
+        sprite = e.resource_manager.get('sprite', entity.sprite_name)
+        sprite_rect = self._get_rect_for_sprite_index(sprite, entity.sprite_index)
+        
+        flip = 1 if hasattr(entity, 'flip') and entity.flip else 0
+        
+        view.draw_image_part(
+            Rect(entity.x, entity.y, sprite_rect.w * entity.sprite_scale, sprite_rect.h * entity.sprite_scale),
+            engine.get().resource_manager.get('image', sprite.sheet),
+            self._get_rect_for_sprite_index(sprite, entity.sprite_index),
+            flip)
+        
+    def _get_rect_for_sprite_index(self, sprite, index):
+        sheet_tex = engine.get().resource_manager.get('image', sprite.sheet)
+        sheet_width = sheet_tex.w
+        x = (sprite.width * index) % sheet_width
+        y = ((sprite.width * index) / sheet_width) * sprite.height
+        return sdl2hl.Rect(x, y, sprite.width, sprite.height)
+
+
+class MoveUsingVelocity(Behavior):
+
+    def __init__(self):
+        self.required_attrs = ('pos', ('velocity', Vec(0, 0)))
+
+    def handle_update(self, entity, dt):
+        entity.pos += dt * entity.velocity
+        engine.get().entity_manager.update_position(entity)
+
+
+class CalculateVelocity(Behavior):
+    
+    def __init__(self):
+        self.required_attrs = ('mass', ('force', Vec(0, 0)), ('velocity', Vec(0, 0)))
+
+    def handle_update(self, entity, dt):
+        entity.velocity += dt * entity.force / entity.mass
+
+
+class DrawStaticText(Behavior):
+
+    def __init__(self):
+        self.required_attrs = ('colour', 'font_size', 'text', 'font', ('angle', 0))
+
+    def add(self, entity):
+        font = engine.get().resource_manager.get('font', (entity.font, entity.font_size))
+        surface = font.render_solid(entity.text, entity.colour)
+        entity.texture = sdl2hl.Texture.from_surface(engine.get().renderer, surface)
+
+        entity.size = Vec(entity.texture.w, entity.texture.h)
+
+    def handle_draw(self, entity, camera):
+        camera.draw_image(Rect.from_entity(entity), entity.texture)
+
+
+class DrawDynamicText(Behavior):
+
+    def __init__(self):
+        self.required_attrs = ('colour', 'size', ('text',''), 'topleft', 'font')
+
+    def handle_draw(self, entity, view):
+        if len(entity.text) > 0:
+            font = engine.get().resource_manager.get('font', (entity.font, entity.size))
+            surface = font.render_solid(entity.text, entity.colour)
+            texture = sdl2hl.Texture.from_surface(engine.get().renderer, surface)
+            x,y = view.screen_percent_point(entity.topleft)
+            r = Rect(x + texture.w / 2, y - texture.h / 2, texture.w, texture.h)
+            view.draw_image(r, texture)
+
+
+class DrawDynamicTextCentered(Behavior):
+
+    def __init__(self):
+        self.required_attrs = ('colour', 'size', ('text',''), 'pos', 'font')
+
+    def handle_draw(self, entity, view):
+        if len(entity.text) > 0:
+            font = engine.get().resource_manager.get('font', (entity.font, entity.size))
+            surface = font.render_solid(entity.text, entity.colour)
+            texture = sdl2hl.Texture.from_surface(engine.get().renderer, surface)
+            r = Rect(entity.x, entity.y, texture.w, texture.h)
+            view.draw_image(r, texture)
+
+
+class WorldMouseFollower(Behavior):
+
+    def __init__(self):
+        self.required_attrs = ('pos',)
+
+    def handle_input(self, entity, action, value):
+        if action == 'move':
+            p = (value[0][0], value[0][1])
+            # get the camera
+            cams = engine.get().entity_manager.get_by_tag('camera')
+            for c in cams:
+                r = Rect(c.screen_x + c.screen_width / 2, c.screen_y + c.screen_height / 2, c.screen_width, c.screen_height)
+                if r.contains(p):
+                    world_point = c.camera.screen_to_world(p)
+                    entity.x = world_point[0]
+                    entity.y = world_point[1]
+                    entity.handle('move')
+                    break
+
+
+class ScreenMouseFollower(Behavior):
+
+    def __init__(self):
+        self.required_attrs = ('pos',)
+
+    def handle_input(self, entity, action, value):
+        if action == 'move':
+            entity.x, entity.y = (value[0][0], value[0][1])
+            entity.handle('move')
+
+
+class HudWorldMouseClicker(Behavior):
+
+    def __init__(self):
+        self.required_attrs = ('pos',
+                               ('world_x', 0),
+                               ('world_y', 0),
+                               ('hud_pressed_list', []),
+                               ('world_pressed_list', []))
+
+    def handle_input(self, entity, action, value):
+        if action == 'click':
+            if value == 1:
+                cams = engine.get().entity_manager.get_by_tag('camera')
+                for c in cams:
+                    r = Rect(c.screen_x + c.screen_width / 2, c.screen_y + c.screen_height / 2, c.screen_width, c.screen_height)
+                    if r.contains((entity.x, entity.y)):
+                        #we found our camera, first check hud
+                        hud_point = c.camera.screen_to_hud((entity.x, entity.y))
+                        for e in c.camera.hud_entities:
+                            if 'clickable' not in e.tags:
+                                break
+                            hud_ent_rect = Rect.from_entity(e)
+                            if hud_ent_rect.contains(hud_point):
+                                entity.hud_pressed_list.append(e)
+                                e.handle('pressed')
+                        #if we found a hud element, we are done
+                        if entity.hud_pressed_list:
+                            return
+                        #now check world
+                        world_point = c.camera.screen_to_world((entity.x, entity.y))
+                        entity.world_pressed_list = engine.get().entity_manager.get_in_area('clickable', Rect(world_point[0], world_point[1], 0, 0))
+                        for e in entity.world_pressed_list:
+                            e.handle('pressed')
+        if value == 0:
+            for e in entity.world_pressed_list:
+                e.handle('released')
+                e.handle('clicked')
+            for e in entity.hud_pressed_list:
+                e.handle('released')
+                e.handle('clicked')
+
+    def handle_move(self, entity):
+        if entity.world_pressed_list:
+            cams = engine.get().entity_manager.get_by_tag('camera')
+            for c in cams:
+                r = Rect(c.screen_x + c.screen_width / 2, c.screen_y + c.screen_height / 2, c.screen_width,
+                                  c.screen_height)
+                if r.contains((entity.x, entity.y)):
+                    world_point = c.camera.screen_to_world((entity.x, entity.y))
+                    new_world_pressed_list = engine.get().entity_manager.get_in_area('clickable', Rect(world_point[0], world_point[1], 0, 0))
+                    for e in entity.world_pressed_list:
+                        if e not in new_world_pressed_list:
+                            e.handle('released')
+                    entity.world_pressed_list = new_world_pressed_list
+        if entity.hud_pressed_list:
+            cams = engine.get().entity_manager.get_by_tag('camera')
+            for c in cams:
+                r = Rect(c.screen_x + c.screen_width / 2, c.screen_y + c.screen_height / 2, c.screen_width,
+                                  c.screen_height)
+                if r.contains((entity.x, entity.y)):
+                    hud_point = c.camera.screen_to_hud((entity.x, entity.y))
+                    new_hud_pressed_list = []
+                    for e in c.camera.hud_entities:
+                        if 'clickable' not in e.tags:
+                            break
+                        hud_ent_rect = Rect.from_entity(e)
+                        if hud_ent_rect.contains(hud_point):
+                            new_hud_pressed_list.append(e)
+                    for e in entity.hud_pressed_list:
+                        if e not in new_hud_pressed_list:
+                            e.handle('released')
+                    entity.hud_pressed_list = new_hud_pressed_list
+        #TODO so much code waste here
+        cams = engine.get().entity_manager.get_by_tag('camera')
+        for c in cams:
+            r = Rect(c.screen_x + c.screen_width / 2, c.screen_y + c.screen_height / 2, c.screen_width,
+                              c.screen_height)
+            if r.contains((entity.x, entity.y)):
+                world_point = c.camera.screen_to_world((entity.x, entity.y))
+                entity.world_x = world_point[0]
+                entity.world_y = world_point[1]
+
+
+class MouseClicker(Behavior):
+
+    def __init__(self):
+        self.required_attrs = ('pos', ('pressed_list', []))
+
+    def handle_input(self, entity, action, value):
+        if action == 'click':
+            if value == 1:
+                #button down, find what we are clicking on
+                entity.pressed_list = engine.get().entity_manager.get_in_area('clickable', Rect(entity.x, entity.y, 0, 0))
+                for e in entity.pressed_list:
+                    e.handle('pressed')
+            elif value == 0:
+                for e in entity.pressed_list:
+                    e.handle('released')
+                    e.handle('clicked')
+
+    def handle_move(self, entity):
+        if entity.pressed_list:
+            new_pressed_list = engine.get().entity_manager.get_in_area('clickable', Rect(entity.x, entity.y, 0, 0))
+            for e in entity.pressed_list:
+                if e not in new_pressed_list:
+                    e.handle('released')
+            entity.pressed_list = new_pressed_list
+
+
+class BasicButton(Behavior):
+
+    def __init__(self):
+        self.required_attrs = ('pos', 'size',
+                              'up_text', 'down_text',
+                              'up_colour', 'down_colour',
+                              ('text', ''),
+                              ('current_colour', (0,0,0)),
+                               ('pressed', False))
+
+    def add(self, entity):
+        super(BasicButton, self).add(entity)
+        entity.text = entity.up_text
+        entity.current_colour = entity.up_colour
+
+    def handle_draw(self, entity, view):
+        view.draw_rect(entity.current_colour, Rect.from_entity(entity))
+
+    def handle_pressed(self, entity):
+        entity.text = entity.down_text
+        entity.current_colour = entity.down_colour
+        entity.pressed = True
+
+    def handle_released(self, entity):
+        entity.text = entity.up_text
+        entity.current_colour = entity.up_colour
+        entity.pressed = False
+
+
+class RotateOnInput(Behavior):
+
+    def __init__(self):
+        self.required_attrs = ('angle', ('va', 0), ('angular_speed', 10))
+
+    def handle_update(self, entity, dt):
+        entity.angle = (entity.angle + entity.va*dt) % 360
+
+        engine.get().entity_manager.update_position(entity)
+
+    def handle_input(self, entity, action, value):
+        if action == 'ccw' and value == 1:
+            entity.va = entity.angular_speed
+        elif action == 'cw' and value == 1:
+            entity.va = -entity.angular_speed
+        elif (action == 'ccw' or action == 'cw') and value == 0:
+            entity.va = 0
+
+
+class ChangeVelocityOnInput(Behavior):
+
+    def __init__(self):
+        self.required_attrs = (('vx', 0), ('vy', 0), ('speed', 100))
+
+    def handle_input(self, entity, action, value):
+        if action == 'up' and value == 1:
+            entity.vy = entity.speed
+        elif action == 'down' and value == 1:
+            entity.vy = -entity.speed
+        elif (action == 'up' or action == 'down') and value == 0:
+            entity.vy = 0
+        if action == 'left' and value == 1:
+            entity.vx = -entity.speed
+        elif action == 'right' and value == 1:
+            entity.vx = entity.speed
+        elif (action == 'left' or action == 'right') and value == 0:
+            entity.vx = 0
+
+
+class ZoomOnInput(Behavior):
+
+    def __init__(self):
+        self.required_attrs = ('size', ('zoom_speed', 1.5))
+
+    def handle_input(self, entity, action, value):
+        if action == 'zoom in' and value == 1:
+            entity.width /= entity.zoom_speed
+            entity.height /= entity.zoom_speed
+        elif action == 'zoom out' and value == 1:
+            entity.width *= entity.zoom_speed
+            entity.height *= entity.zoom_speed
+
+
+class SyncWithEntity(Behavior):
+
+    def __init__(self):
+        self.required_attrs = ('sync_target', 'sync_attributes')
+    
+    def handle_update(self, entity, dt):
+        target = engine.get().entity_manager.get_by_name(entity.sync_target)
+        for attribute in entity.sync_attributes:
+            entity.__dict__[attribute] = getattr(target, attribute)
+
+
+class Animate(Behavior):
+    
+    def __init__(self):
+        self.required_attrs = ('default_animation',)
+
+    def add(self, entity):
+        super(Animate, self).add(entity)
+        self.handle_play_animation(entity, entity.default_animation)
+
+    def handle_update(self, entity, dt):
+        apply_frame = False
+        if entity.current_frame_time == 0:
+            apply_frame = True
+        
+        animation = engine.get().resource_manager.get('animation', entity.animation_name)
+        frame = animation.frames[entity.current_frame]
+        
+        entity.current_frame_time += dt
+        
+        if entity.current_frame_time > frame.duration:
+            apply_frame = True
+            entity.current_frame_time -= frame.duration
+            
+            if entity.current_frame == len(animation.frames) - 1: # already on the last frame
+                if not entity.loop_animation:
+                    self.handle_play_animation(entity, entity.default_animation, True)
+            else:
+                entity.current_frame += 1
+                
+        if apply_frame:
+            new_animation = engine.get().resource_manager.get('animation', entity.animation_name)
+            new_frame = new_animation.frames[entity.current_frame]
+            for name in new_frame.attributes._fields:
+                value = getattr(new_frame.attributes, name)
+                entity.__dict__[name] = value
+                
+            for event in new_frame.events:
+                entity.handle(event[0], *event[1:])
+        
+    def handle_play_animation(self, entity, animation_name, reset=False, loop=False):
+        if reset or getattr(entity, 'animation_name', None) != animation_name:
+            entity.animation_name = animation_name
+            entity.current_frame = 0
+            entity.current_frame_time = 0
+            entity.loop_animation = loop
+
+
+class TimeToLive(Behavior):
+
+    def __init__(self):
+        self.required_attrs = ('time_to_live',)
+
+    def handle_update(self, entity, dt):
+        entity.time_to_live -= dt
+        if entity.time_to_live <= 0:
+            engine.get().entity_manager.remove(entity)
+
+
+class RadioButton(Behavior):
+
+    def __init__(self):
+        self.required_attrs = ('pos', 'size',
+                               'up_text', 'down_text',
+                               'up_colour', 'down_colour',
+                               ('text', ''),
+                               ('current_colour', (0, 0, 0)),
+                               'radio_group',
+                               ('selected', False))
+
+    def add(self, entity):
+        super(RadioButton, self).add(entity)
+        if entity.selected:
+            entity.text = entity.down_text
+            entity.current_colour = entity.down_colour
+        else:
+            entity.text = entity.up_text
+            entity.current_colour = entity.up_colour
+
+    def handle_draw(self, entity, view):
+        view.draw_rect(entity.current_colour, Rect.from_entity(entity))
+
+    #def handle_pressed(self, entity):
+    #    entity.text = entity.down_text
+    #    entity.current_colour = entity.down_colour
+
+    def handle_un_selected(self, entity):
+        entity.text = entity.up_text
+        entity.current_colour = entity.up_colour
+        entity.selected = False
+
+    def handle_clicked(self, entity):
+        eng = engine.get()
+        #find other radio buttons
+        all = eng.entity_manager.get_by_tag('radio_button')
+        group = []
+        for e in all:
+            if e.radio_group == entity.radio_group and not e == entity:
+                e.handle('un_selected')
+
+        entity.text = entity.down_text
+        entity.current_colour = entity.down_colour
+        entity.selected = True
+        
+        
+class PlaySound(Behavior):
+
+    def __init__(self):
+        self.required_attrs = []
+        
+    def handle_play_sound(self, entity, sound_name):
+        sound = engine.get().resource_manager.get('sound', sound_name)
+        sound.play()
+

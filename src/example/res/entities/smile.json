@@ -1,0 +1,11 @@
+{
+  "pos": {"x": 0, "y": 0},
+  "size": {"x":  100, "y":  100},
+  "angle" : 0,
+  "world": "game",
+  "image": "Smiley.png",
+  "name" : "smile",
+  "default_animation" : "test",
+  "behaviors" : ["Animate", "DrawHitBox", "DrawScaledImage", "RotateOnInput", "ChangeVelocityOnInput", "MoveUsingVelocity"],
+  "tags" : ["draw","update"]
+}

@@ -24,11 +24,10 @@ setup(
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
     ],
-
-    packages=['awesomeengine'],
+    package_dir = {'': 'src'},
+    packages=['awesomeengine', 'awesomeengine/_ffi'],
     test_suite='tests',
 
     install_requires=[
-        'sdl2hl>=0.3.3',
     ],
 )
