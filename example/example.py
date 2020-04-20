@@ -1,5 +1,5 @@
 from awesomeengine.engine import Engine
-from awesomeengine.entity import Entity
+from awesomeengine import Entity
 
 from .behaviors import ChangeMode
 from .modes import MainMode, WelcomeMode, ButtonTestMode

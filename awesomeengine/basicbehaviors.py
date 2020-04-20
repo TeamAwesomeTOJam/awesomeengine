@@ -1,4 +1,4 @@
-from awesomeengine import engine, geometry
+from awesomeengine import engine
 from awesomeengine.behavior import Behavior
 from awesomeengine.geometry import Rect, Vec
 

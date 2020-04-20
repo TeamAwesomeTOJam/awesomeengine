@@ -1,4 +1,3 @@
-from collections import namedtuple
 import ctypes
 
 from awesomeengine import engine, _ffi

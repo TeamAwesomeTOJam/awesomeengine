@@ -1,7 +1,7 @@
 from awesomeengine import engine
 from awesomeengine.camera import TopDownCamera
-from awesomeengine.entity import Entity
-from awesomeengine.geometry import Rect
+from awesomeengine import Entity
+from awesomeengine import Rect
 from awesomeengine.mode import Mode
 from awesomeengine.view import View
 
